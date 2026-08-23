@@ -19,7 +19,7 @@ public enum WritingTone {
 public final class AppleIntelligenceEngine {
     
     private let tagger = NLTagger(tagSchemes: [.lemma, .tokenType, .lexicalClass])
-    private let embedding = NLEmbedding.word(for: .english)
+    private let embedding = NLEmbedding.wordEmbedding(for: .english)
     
     public init() {}
     

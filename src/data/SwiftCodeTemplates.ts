@@ -122,7 +122,8 @@ public class KeyboardViewController: UIInputViewController {
     
     private let spatialEngine = SpatialTouchEngine()
     private let languageModel = ProbabilisticTrie()
-    private let hapticManager = HapticFeedbackManager()
+    private let tagger = NLTagger(tagSchemes: [.lemma, .tokenType, .lexicalClass])
+    private let embedding = NLEmbedding.wordEmbedding(for: .english)
     private let mediaManager = MediaAttachmentManager.shared
     
     private var aiEngine: Any?
