@@ -4,3 +4,5 @@ dist/
 *.log
 temp_export/
 package_zip.ps1
+
+.vercel
