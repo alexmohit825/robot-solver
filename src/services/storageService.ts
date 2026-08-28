@@ -1,7 +1,7 @@
 import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, SurgeonProfile, EmailRelayConfig } from '../types/vigilor';
 
 const STORAGE_KEYS = {
-  VERSION: 'vigilor_storage_version_v5_email_first',
+  VERSION: 'vigilor_storage_version_v6_multicare',
   RULES: 'vigilor_rules',
   SCHEDULERS: 'vigilor_schedulers',
   NOTIFICATIONS: 'vigilor_notifications',
@@ -11,13 +11,13 @@ const STORAGE_KEYS = {
   SENTINEL_PAUSED: 'vigilor_sentinel_paused',
 };
 
-const CURRENT_VERSION = '5.0.0_email_first_sentinel';
+const CURRENT_VERSION = '6.0.0_multicare_institute';
 
 const DEFAULT_PROFILE: SurgeonProfile = {
   name: 'A. Alex Mohit',
   title: 'MD, PhD, FAANS',
   specialty: 'Neurological Surgery',
-  primaryHospital: 'Neurosurgery & Spine Center',
+  primaryHospital: 'MultiCare Neuroscience Institute',
   officeEmail: 'mohalex@gmail.com',
   officePhone: '+1 (206) 650-3283'
 };
@@ -42,13 +42,13 @@ const DEFAULT_RULES: ProtectionRule[] = [
 const DEFAULT_SCHEDULERS: Scheduler[] = [
   {
     id: 'sched_primary_1',
-    fullName: 'Lead Surgery Scheduler',
-    facilityName: 'Main Hospital OR Scheduling Desk',
-    email: 'mohalex@gmail.com', // Pre-configured to Dr. Mohit's email for instant live testing!
+    fullName: 'Surgery Scheduler',
+    facilityName: 'MultiCare Neuroscience Institute OR Scheduling Desk',
+    email: 'mohalex@gmail.com', // Replace with your scheduler's email
     phone: '+1 (206) 650-3283',
     roleTitle: 'Primary OR Coordinator',
     isActive: true,
-    notes: 'Receives automated high-priority email notices whenever Dr. Mohit places calendar blocks.'
+    notes: 'Receives automated schedule blackout notices for A. Alex Mohit, MD, PhD, FAANS.'
   }
 ];
 
@@ -69,7 +69,7 @@ const DEFAULT_ICLOUD_CONFIG: ICloudConnectionConfig = {
 
 const DEFAULT_EMAIL_CONFIG: EmailRelayConfig = {
   senderEmail: 'mohalex@gmail.com',
-  senderName: 'Dr. A. Alex Mohit, MD, PhD, FAANS',
+  senderName: 'A. Alex Mohit, MD, PhD, FAANS',
   replyToEmail: 'mohalex@gmail.com',
   serviceProvider: 'GMAIL_SMTP',
   apiKeyOrPasswordMasked: '',

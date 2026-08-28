@@ -16,7 +16,7 @@ export function evaluateEventAgainstRule(
   event: CalendarEvent,
   rule: ProtectionRule,
   allSchedulers: Scheduler[],
-  surgeonName: string = 'Dr. A. Alex Mohit'
+  surgeonName: string = 'A. Alex Mohit, MD, PhD, FAANS'
 ): EvaluationResult {
   if (!rule.isActive) {
     return {
@@ -144,7 +144,7 @@ export function evaluateEventAgainstAllRules(
   event: CalendarEvent,
   rules: ProtectionRule[],
   schedulers: Scheduler[],
-  surgeonName: string = 'Dr. A. Alex Mohit'
+  surgeonName: string = 'A. Alex Mohit, MD, PhD, FAANS'
 ): EvaluationResult {
   // If rules array is empty, provide a live default rule so simulator never breaks
   const activeRulesList = rules.length > 0 ? rules : [

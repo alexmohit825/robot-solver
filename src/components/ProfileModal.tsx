@@ -103,7 +103,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 value={formData.primaryHospital}
                 onChange={e => setFormData({ ...formData, primaryHospital: e.target.value })}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-emerald-500"
-                placeholder="e.g. Neurosurgery & Spine Center"
+                placeholder="e.g. MultiCare Neuroscience Institute"
               />
               <Building className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
             </div>

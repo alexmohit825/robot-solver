@@ -282,7 +282,7 @@ export const SimulatorPlayground: React.FC<SimulatorPlaygroundProps> = ({
                     {/* Email Header Bar */}
                     <div className="bg-slate-900/90 p-4 border-b border-slate-800 space-y-1.5 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="text-slate-400 font-semibold">From: <strong className="text-white">Dr. {profile.name}</strong> &lt;{profile.officeEmail}&gt;</span>
+                        <span className="text-slate-400 font-semibold">From: <strong className="text-white">{profile.name}, {profile.title}</strong> &lt;{profile.officeEmail}&gt;</span>
                         {record && (
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                             isAcked ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
@@ -293,7 +293,7 @@ export const SimulatorPlayground: React.FC<SimulatorPlaygroundProps> = ({
                       </div>
                       <div className="text-slate-400 font-semibold">To: <strong className="text-emerald-300">{scheduler.fullName}</strong> &lt;{scheduler.email}&gt;</div>
                       <div className="text-slate-200 font-bold text-sm pt-1">
-                        Subject: [OR Block Notice] Dr. {profile.name} - Protected Window ({evaluation.formattedTimeWindow || 'Wednesday from 12:00 PM to 5:00 PM'})
+                        Subject: [OR Block Notice] {profile.name}, {profile.title} - Protected Window ({evaluation.formattedTimeWindow || 'Wednesday from 12:00 PM to 5:00 PM'})
                       </div>
                     </div>
 
@@ -311,12 +311,12 @@ export const SimulatorPlayground: React.FC<SimulatorPlaygroundProps> = ({
                       </p>
 
                       <p className="leading-relaxed">
-                        Please be advised that Dr. {profile.name} has scheduled a protected schedule block on his calendar:
+                        Please be advised that <strong>{profile.name}, {profile.title}</strong> has scheduled a protected schedule block on the calendar:
                       </p>
 
                       <div className="bg-slate-100 rounded-xl p-3.5 border border-slate-200 space-y-1.5">
                         <div><strong>Protected Window:</strong> <span className="text-emerald-700 font-bold">{evaluation.formattedTimeWindow || 'Wednesday from 12:00 PM to 5:00 PM'}</span></div>
-                        <div><strong>Block Type:</strong> <span className="text-slate-900 font-semibold">{evaluation.sanitizedSummary || 'Dr. A. Alex Mohit Personal Block'}</span></div>
+                        <div><strong>Block Type:</strong> <span className="text-slate-900 font-semibold">{evaluation.sanitizedSummary || 'A. Alex Mohit, MD, PhD, FAANS Personal Block'}</span></div>
                         <div><strong>Facility:</strong> {profile.primaryHospital}</div>
                       </div>
 

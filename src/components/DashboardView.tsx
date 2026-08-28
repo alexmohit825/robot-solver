@@ -41,7 +41,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <span>Autonomous Clinical Availability Sentinel</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Dr. {profile.name}, <span className="text-slate-400 font-normal text-xl sm:text-2xl">{profile.title}</span>
+              {profile.name}, <span className="text-slate-400 font-normal text-xl sm:text-2xl">{profile.title}</span>
             </h1>
             <p className="text-slate-400 text-sm max-w-2xl">
               {profile.specialty} • {profile.primaryHospital}. VigilOR autonomously monitors your Apple Calendar and emails OR blackout notices directly to surgery scheduling desks whenever protected windows are blocked.
