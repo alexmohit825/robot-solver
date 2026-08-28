@@ -14,8 +14,9 @@ export const QrInstallModal: React.FC<QrInstallModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  // High-resolution SVG QR code URL encoded for GitHub Pages app link
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(appUrl)}&color=0f172a&bgcolor=ffffff&qzone=2&margin=0`;
+  // Exact working URL pointing to VigilOR GitHub Pages
+  const exactLiveUrl = 'https://alexmohit825.github.io/vigilOR/';
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(exactLiveUrl)}&color=0f172a&bgcolor=ffffff&qzone=2&margin=0`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
@@ -67,7 +68,7 @@ export const QrInstallModal: React.FC<QrInstallModalProps> = ({
         {/* Direct Link Alternative */}
         <div className="pt-1">
           <a
-            href={appUrl}
+            href={exactLiveUrl}
             target="_blank"
             rel="noreferrer"
             className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold inline-flex items-center space-x-1"
