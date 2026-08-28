@@ -11,11 +11,11 @@ interface QrInstallModalProps {
 export const QrInstallModal: React.FC<QrInstallModalProps> = ({
   isOpen,
   onClose,
-  appUrl = 'https://alexmohit825.github.io/vigilOR/',
+  appUrl = 'https://alexmohit825.github.io/vigilor/',
 }) => {
   if (!isOpen) return null;
 
-  const exactWorkingUrl = 'https://alexmohit825.github.io/vigilOR/';
+  const exactWorkingUrl = 'https://alexmohit825.github.io/vigilor/';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
@@ -58,12 +58,12 @@ export const QrInstallModal: React.FC<QrInstallModalProps> = ({
 
           <div className="flex items-start space-x-2.5">
             <span className="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">2</span>
-            <span>Tap the yellow <strong>alexmohit825.github.io</strong> link in Safari.</span>
+            <span>Tap the yellow <strong>Safari link</strong> that appears on your screen.</span>
           </div>
 
           <div className="flex items-start space-x-2.5">
             <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">3</span>
-            <span>Tap the <strong>Share button</strong> (square with arrow) $\rightarrow$ select <strong>"Add to Home Screen"</strong>.</span>
+            <span>In Safari, tap the <strong>Share button</strong> (square with arrow) and select <strong>"Add to Home Screen"</strong>.</span>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export const QrInstallModal: React.FC<QrInstallModalProps> = ({
             rel="noreferrer"
             className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold inline-flex items-center space-x-1"
           >
-            <span>Direct link: alexmohit825.github.io/vigilOR/</span>
+            <span>Direct link: alexmohit825.github.io/vigilor/</span>
             <ExternalLink className="w-3 h-3" />
           </a>
         </div>
