@@ -1,6 +1,6 @@
 import React from 'react';
-import { ShieldCheck, ShieldAlert, RefreshCw, Calendar, Users, Sliders, PlayCircle, History, Cloud, User, Smartphone } from 'lucide-react';
-import { ICloudConnectionConfig, SurgeonProfile, TwilioConfig } from '../types/vigilor';
+import { ShieldCheck, ShieldAlert, RefreshCw, Calendar, Users, Sliders, PlayCircle, History, Cloud, User, Mail } from 'lucide-react';
+import { ICloudConnectionConfig, SurgeonProfile, EmailRelayConfig } from '../types/vigilor';
 
 interface HeaderProps {
   activeTab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit';
@@ -12,7 +12,7 @@ interface HeaderProps {
   onOpenICloudModal: () => void;
   profile: SurgeonProfile;
   onOpenProfileModal: () => void;
-  onOpenDiagnosticsModal: () => void;
+  onOpenEmailModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenICloudModal,
   profile,
   onOpenProfileModal,
-  onOpenDiagnosticsModal,
+  onOpenEmailModal,
 }) => {
   return (
     <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
@@ -40,10 +40,10 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="flex items-center space-x-2">
                 <span className="text-xl font-bold tracking-tight text-white">Vigil<span className="text-emerald-400">OR</span></span>
                 <span className="px-2 py-0.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  Sentinel
+                  Email Sentinel
                 </span>
               </div>
-              <p className="text-xs text-slate-400 hidden sm:block">Autonomous OR Schedule Sentinel & Availability Relay</p>
+              <p className="text-xs text-slate-400 hidden sm:block">Autonomous OR Schedule Sentinel & Clinical Email Relay</p>
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Users className="w-4 h-4" />
-              <span>Schedulers</span>
+              <span>Scheduler Inboxes</span>
             </button>
 
             <button
@@ -94,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <PlayCircle className="w-4 h-4" />
-              <span>What-If Simulator</span>
+              <span>Email Simulator</span>
             </button>
 
             <button
@@ -112,14 +112,14 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Items */}
           <div className="flex items-center space-x-2">
-            {/* Live SMS Diagnostics Button */}
+            {/* Test Email Relay Button */}
             <button
-              onClick={onOpenDiagnosticsModal}
+              onClick={onOpenEmailModal}
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-xs text-emerald-300 font-bold transition-all shadow-sm"
-              title="Test Live SMS Dispatch"
+              title="Test Clinical Email Relay"
             >
-              <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">Live SMS Test</span>
+              <Mail className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">Test Email Relay</span>
             </button>
 
             {/* Surgeon Profile Button */}
@@ -181,7 +181,7 @@ export const Header: React.FC<HeaderProps> = ({
               activeTab === 'schedulers' ? 'bg-emerald-500 text-white' : 'text-slate-400'
             }`}
           >
-            Schedulers
+            Inboxes
           </button>
           <button
             onClick={() => setActiveTab('simulator')}
@@ -189,7 +189,7 @@ export const Header: React.FC<HeaderProps> = ({
               activeTab === 'simulator' ? 'bg-emerald-500 text-white' : 'text-slate-400'
             }`}
           >
-            Simulator
+            Email Simulator
           </button>
           <button
             onClick={() => setActiveTab('audit')}
@@ -197,7 +197,7 @@ export const Header: React.FC<HeaderProps> = ({
               activeTab === 'audit' ? 'bg-emerald-500 text-white' : 'text-slate-400'
             }`}
           >
-            Logs
+            Audit Logs
           </button>
         </div>
       </div>

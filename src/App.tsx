@@ -8,11 +8,12 @@ import { SimulatorPlayground } from './components/SimulatorPlayground';
 import { AuditLogView } from './components/AuditLogView';
 import { ICloudConnectionModal } from './components/iCloudConnectionModal';
 import { ProfileModal } from './components/ProfileModal';
-import { LiveDiagnosticsModal } from './components/LiveDiagnosticsModal';
+import { EmailDiagnosticsModal } from './components/EmailDiagnosticsModal';
 
-import { storageService, TwilioConfig } from './services/storageService';
+import { storageService } from './services/storageService';
 import { ICloudCalDAVClient } from './engine/caldavClient';
-import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, SurgeonProfile } from './types/vigilor';
+import { generateClinicalEmail } from './engine/dispatcher';
+import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, SurgeonProfile, EmailRelayConfig } from './types/vigilor';
 
 export const App: React.FC = () => {
   // App State
@@ -21,14 +22,14 @@ export const App: React.FC = () => {
   const [schedulers, setSchedulers] = useState<Scheduler[]>(storageService.getSchedulers());
   const [notifications, setNotifications] = useState<NotificationRecord[]>(storageService.getNotifications());
   const [icloudConfig, setIcloudConfig] = useState<ICloudConnectionConfig>(storageService.getICloudConfig());
-  const [twilioConfig, setTwilioConfig] = useState<TwilioConfig>(storageService.getTwilioConfig());
+  const [emailConfig, setEmailConfig] = useState<EmailRelayConfig>(storageService.getEmailConfig());
   const [profile, setProfile] = useState<SurgeonProfile>(storageService.getSurgeonProfile());
   const [isPaused, setIsPaused] = useState<boolean>(storageService.isSentinelPaused());
   
   // Modals & UI States
   const [isICloudModalOpen, setIsICloudModalOpen] = useState<boolean>(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
-  const [isDiagnosticsModalOpen, setIsDiagnosticsModalOpen] = useState<boolean>(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(icloudConfig.lastSyncAt);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -69,6 +70,14 @@ export const App: React.FC = () => {
   };
 
   const handleSendTestPing = (scheduler: Scheduler) => {
+    const emailPayload = generateClinicalEmail(
+      profile,
+      scheduler,
+      'Wednesday from 12:00 PM to 5:00 PM',
+      'Personal Block (OR Blackout)',
+      `test_${Date.now()}`
+    );
+
     const testRecord: NotificationRecord = {
       id: `notif_test_${Date.now()}`,
       ruleId: 'rule_test_ping',
@@ -76,13 +85,14 @@ export const App: React.FC = () => {
       schedulerId: scheduler.id,
       schedulerName: scheduler.fullName,
       schedulerFacility: scheduler.facilityName,
-      channel: scheduler.preferredChannel === 'BOTH' ? 'SMS' : scheduler.preferredChannel,
-      recipientAddress: scheduler.phone || scheduler.email,
+      recipientEmail: scheduler.email,
       eventUid: 'evt_ping_test',
-      eventSummary: 'VigilOR Test Verification Ping',
+      eventSummary: 'VigilOR Test Verification Notice',
       eventStart: new Date().toISOString(),
       eventEnd: new Date().toISOString(),
-      messageText: `[VigilOR Test Ping] Connection verified for ${scheduler.fullName} at ${scheduler.facilityName || 'Main Hospital'}. You are configured to receive automated OR block notices from Dr. ${profile.name}.`,
+      emailSubject: emailPayload.subject,
+      emailHtml: emailPayload.html,
+      emailText: emailPayload.text,
       deliveryStatus: 'SENT',
       sentAt: new Date().toISOString(),
       ackStatus: 'UNACKNOWLEDGED'
@@ -91,7 +101,12 @@ export const App: React.FC = () => {
     const updated = [testRecord, ...notifications];
     setNotifications(updated);
     storageService.saveNotifications(updated);
-    triggerToast(`Test notification sent to ${scheduler.fullName}.`);
+    
+    // Open default mail client
+    const mailto = `mailto:${scheduler.email}?subject=${encodeURIComponent(emailPayload.subject)}&body=${encodeURIComponent(emailPayload.text)}`;
+    window.open(mailto, '_blank');
+
+    triggerToast(`Official test notice prepared for ${scheduler.fullName} (${scheduler.email}).`);
   };
 
   // Notification / Ack Handlers
@@ -99,7 +114,7 @@ export const App: React.FC = () => {
     const updated = [newRecord, ...notifications];
     setNotifications(updated);
     storageService.saveNotifications(updated);
-    triggerToast(`Alert sent to ${newRecord.schedulerName} (${newRecord.channel})`);
+    triggerToast(`Email alert sent to ${newRecord.schedulerName}`);
   };
 
   const handleAckNotification = (notificationId: string, status: 'ACKNOWLEDGED' | 'CONFLICT') => {
@@ -114,7 +129,7 @@ export const App: React.FC = () => {
     setSchedulers(storageService.getSchedulers());
     setNotifications(storageService.getNotifications());
     setProfile(storageService.getSurgeonProfile());
-    setTwilioConfig(storageService.getTwilioConfig());
+    setEmailConfig(storageService.getEmailConfig());
     triggerToast('History reset to clean state.');
   };
 
@@ -164,7 +179,7 @@ export const App: React.FC = () => {
         onOpenICloudModal={() => setIsICloudModalOpen(true)}
         profile={profile}
         onOpenProfileModal={() => setIsProfileModalOpen(true)}
-        onOpenDiagnosticsModal={() => setIsDiagnosticsModalOpen(true)}
+        onOpenEmailModal={() => setIsEmailModalOpen(true)}
       />
 
       {/* Sentinel Live Status Banner */}
@@ -247,25 +262,26 @@ export const App: React.FC = () => {
         }}
       />
 
-      {/* Live SMS & Cloud Diagnostics Modal */}
-      <LiveDiagnosticsModal
-        isOpen={isDiagnosticsModalOpen}
-        onClose={() => setIsDiagnosticsModalOpen(false)}
-        twilioConfig={twilioConfig}
-        onSaveTwilioConfig={(updated) => {
-          setTwilioConfig(updated);
-          storageService.saveTwilioConfig(updated);
-          triggerToast('Twilio settings saved.');
+      {/* Clinical Email Relay Diagnostics Modal */}
+      <EmailDiagnosticsModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        emailConfig={emailConfig}
+        onSaveEmailConfig={(updated) => {
+          setEmailConfig(updated);
+          storageService.saveEmailConfig(updated);
+          triggerToast('Email relay settings saved.');
         }}
         icloudConfig={icloudConfig}
         profile={profile}
+        schedulers={schedulers}
       />
 
       {/* Footer */}
       <footer className="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>VigilOR • Dr. {profile.name}, {profile.title} • {profile.specialty}</span>
-          <span>Apple iCloud CalDAV (RFC 4791) • End-to-End Encrypted Relay</span>
+          <span>Apple iCloud CalDAV (RFC 4791) • Official OR Blackout Email Relay</span>
         </div>
       </footer>
     </div>

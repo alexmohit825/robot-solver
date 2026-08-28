@@ -93,9 +93,9 @@ export function evaluateEventAgainstRule(
         id: 'sched_fallback',
         fullName: 'Lead Surgery Scheduler',
         facilityName: 'Main Hospital OR Desk',
+        email: 'mohalex@gmail.com',
         phone: '+1 (206) 650-3283',
-        email: 'scheduler@hospital.org',
-        preferredChannel: 'BOTH',
+        roleTitle: 'OR Coordinator',
         isActive: true
       }
     ];

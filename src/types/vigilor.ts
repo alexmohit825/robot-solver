@@ -4,9 +4,9 @@ export interface Scheduler {
   id: string;
   fullName: string;
   facilityName: string; // e.g. "Main Hospital OR Scheduling Desk"
-  phone: string; // e.g. "+1 (555) 234-5678"
   email: string; // e.g. "scheduler@hospital.org"
-  preferredChannel: 'SMS' | 'EMAIL' | 'BOTH';
+  phone?: string; // Optional phone for reference
+  roleTitle?: string; // e.g. "Lead Surgical Coordinator"
   isActive: boolean;
   notes?: string;
 }
@@ -46,13 +46,14 @@ export interface NotificationRecord {
   schedulerId: string;
   schedulerName: string;
   schedulerFacility: string;
-  channel: 'SMS' | 'EMAIL';
-  recipientAddress: string;
+  recipientEmail: string;
   eventUid: string;
   eventSummary: string;
   eventStart: string;
   eventEnd: string;
-  messageText: string;
+  emailSubject: string;
+  emailHtml: string;
+  emailText: string;
   deliveryStatus: DeliveryStatus;
   sentAt?: string;
   ackStatus: AckStatus;
@@ -71,11 +72,12 @@ export interface ICloudConnectionConfig {
   availableCalendars: string[];
 }
 
-export interface TwilioConfig {
-  accountSid: string;
-  authTokenMasked: string;
-  fromPhoneNumber: string;
-  targetPhoneNumber: string;
+export interface EmailRelayConfig {
+  senderEmail: string;
+  senderName: string;
+  replyToEmail: string;
+  serviceProvider: 'GMAIL_SMTP' | 'RESEND' | 'OUTLOOK' | 'CUSTOM_SMTP';
+  apiKeyOrPasswordMasked: string;
   isVerified: boolean;
   lastTestedAt: string | null;
 }
@@ -85,4 +87,6 @@ export interface SurgeonProfile {
   title: string;
   specialty: string;
   primaryHospital: string;
+  officeEmail: string;
+  officePhone?: string;
 }

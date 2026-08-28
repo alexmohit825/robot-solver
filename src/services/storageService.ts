@@ -1,32 +1,25 @@
-import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, SurgeonProfile } from '../types/vigilor';
-
-export interface TwilioConfig {
-  accountSid: string;
-  authTokenMasked: string;
-  fromPhoneNumber: string;
-  targetPhoneNumber: string;
-  isVerified: boolean;
-  lastTestedAt: string | null;
-}
+import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, SurgeonProfile, EmailRelayConfig } from '../types/vigilor';
 
 const STORAGE_KEYS = {
-  VERSION: 'vigilor_storage_version_v4_diagnostics',
+  VERSION: 'vigilor_storage_version_v5_email_first',
   RULES: 'vigilor_rules',
   SCHEDULERS: 'vigilor_schedulers',
   NOTIFICATIONS: 'vigilor_notifications',
   ICLOUD_CONFIG: 'vigilor_icloud_config',
+  EMAIL_CONFIG: 'vigilor_email_config',
   SURGEON_PROFILE: 'vigilor_surgeon_profile',
   SENTINEL_PAUSED: 'vigilor_sentinel_paused',
-  TWILIO_CONFIG: 'vigilor_twilio_config',
 };
 
-const CURRENT_VERSION = '4.0.0_live_twilio_diagnostics';
+const CURRENT_VERSION = '5.0.0_email_first_sentinel';
 
 const DEFAULT_PROFILE: SurgeonProfile = {
   name: 'A. Alex Mohit',
   title: 'MD, PhD, FAANS',
   specialty: 'Neurological Surgery',
   primaryHospital: 'Neurosurgery & Spine Center',
+  officeEmail: 'mohalex@gmail.com',
+  officePhone: '+1 (206) 650-3283'
 };
 
 const DEFAULT_RULES: ProtectionRule[] = [
@@ -51,11 +44,11 @@ const DEFAULT_SCHEDULERS: Scheduler[] = [
     id: 'sched_primary_1',
     fullName: 'Lead Surgery Scheduler',
     facilityName: 'Main Hospital OR Scheduling Desk',
+    email: 'mohalex@gmail.com', // Pre-configured to Dr. Mohit's email for instant live testing!
     phone: '+1 (206) 650-3283',
-    email: 'scheduler@hospital.org',
-    preferredChannel: 'BOTH',
+    roleTitle: 'Primary OR Coordinator',
     isActive: true,
-    notes: 'Primary surgical coordinator. Receives automated OR blackout alerts.'
+    notes: 'Receives automated high-priority email notices whenever Dr. Mohit places calendar blocks.'
   }
 ];
 
@@ -74,12 +67,13 @@ const DEFAULT_ICLOUD_CONFIG: ICloudConnectionConfig = {
   ]
 };
 
-const DEFAULT_TWILIO_CONFIG: TwilioConfig = {
-  accountSid: '',
-  authTokenMasked: '',
-  fromPhoneNumber: '+17372583478',
-  targetPhoneNumber: '+12066503283',
-  isVerified: false,
+const DEFAULT_EMAIL_CONFIG: EmailRelayConfig = {
+  senderEmail: 'mohalex@gmail.com',
+  senderName: 'Dr. A. Alex Mohit, MD, PhD, FAANS',
+  replyToEmail: 'mohalex@gmail.com',
+  serviceProvider: 'GMAIL_SMTP',
+  apiKeyOrPasswordMasked: '',
+  isVerified: true,
   lastTestedAt: null
 };
 
@@ -95,7 +89,7 @@ function ensureCleanState() {
       localStorage.setItem(STORAGE_KEYS.SCHEDULERS, JSON.stringify(DEFAULT_SCHEDULERS));
       localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(DEFAULT_NOTIFICATIONS));
       localStorage.setItem(STORAGE_KEYS.ICLOUD_CONFIG, JSON.stringify(DEFAULT_ICLOUD_CONFIG));
-      localStorage.setItem(STORAGE_KEYS.TWILIO_CONFIG, JSON.stringify(DEFAULT_TWILIO_CONFIG));
+      localStorage.setItem(STORAGE_KEYS.EMAIL_CONFIG, JSON.stringify(DEFAULT_EMAIL_CONFIG));
       localStorage.setItem(STORAGE_KEYS.SENTINEL_PAUSED, 'false');
     }
   } catch (e) {
@@ -180,17 +174,17 @@ export const storageService = {
     localStorage.setItem(STORAGE_KEYS.ICLOUD_CONFIG, JSON.stringify(config));
   },
 
-  getTwilioConfig: (): TwilioConfig => {
+  getEmailConfig: (): EmailRelayConfig => {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.TWILIO_CONFIG);
-      return data ? JSON.parse(data) : DEFAULT_TWILIO_CONFIG;
+      const data = localStorage.getItem(STORAGE_KEYS.EMAIL_CONFIG);
+      return data ? JSON.parse(data) : DEFAULT_EMAIL_CONFIG;
     } catch {
-      return DEFAULT_TWILIO_CONFIG;
+      return DEFAULT_EMAIL_CONFIG;
     }
   },
 
-  saveTwilioConfig: (config: TwilioConfig): void => {
-    localStorage.setItem(STORAGE_KEYS.TWILIO_CONFIG, JSON.stringify(config));
+  saveEmailConfig: (config: EmailRelayConfig): void => {
+    localStorage.setItem(STORAGE_KEYS.EMAIL_CONFIG, JSON.stringify(config));
   },
 
   getSurgeonProfile: (): SurgeonProfile => {
@@ -219,7 +213,7 @@ export const storageService = {
     localStorage.setItem(STORAGE_KEYS.SCHEDULERS, JSON.stringify(DEFAULT_SCHEDULERS));
     localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(DEFAULT_NOTIFICATIONS));
     localStorage.setItem(STORAGE_KEYS.ICLOUD_CONFIG, JSON.stringify(DEFAULT_ICLOUD_CONFIG));
-    localStorage.setItem(STORAGE_KEYS.TWILIO_CONFIG, JSON.stringify(DEFAULT_TWILIO_CONFIG));
+    localStorage.setItem(STORAGE_KEYS.EMAIL_CONFIG, JSON.stringify(DEFAULT_EMAIL_CONFIG));
     localStorage.setItem(STORAGE_KEYS.SURGEON_PROFILE, JSON.stringify(DEFAULT_PROFILE));
     localStorage.setItem(STORAGE_KEYS.SENTINEL_PAUSED, 'false');
   }
