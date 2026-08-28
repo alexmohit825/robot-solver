@@ -2,19 +2,24 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-async function generateIcons() {
+async function buildSafariProofIcons() {
   const svgPath = path.join(__dirname, 'public', 'icon.svg');
   const svgBuffer = fs.readFileSync(svgPath);
 
+  // Copy SVG as apple-touch-icon.svg
+  fs.copyFileSync(svgPath, path.join(__dirname, 'public', 'apple-touch-icon.svg'));
+
   const sizes = [
-    { name: 'favicon-32x32.png', size: 32 },
-    { name: 'favicon-192x192.png', size: 192 },
     { name: 'apple-touch-icon.png', size: 180 },
+    { name: 'apple-touch-icon-precomposed.png', size: 180 },
     { name: 'apple-touch-icon-180x180.png', size: 180 },
+    { name: 'apple-touch-icon-167x167.png', size: 167 },
     { name: 'apple-touch-icon-152x152.png', size: 152 },
     { name: 'apple-touch-icon-120x120.png', size: 120 },
     { name: 'apple-touch-icon-512x512.png', size: 512 },
     { name: 'pwa-512x512.png', size: 512 },
+    { name: 'favicon-192x192.png', size: 192 },
+    { name: 'favicon-32x32.png', size: 32 },
     { name: 'favicon.ico', size: 64 }
   ];
 
@@ -22,23 +27,70 @@ async function generateIcons() {
     const outPath = path.join(__dirname, 'public', s.name);
     await sharp(svgBuffer)
       .resize(s.size, s.size)
-      .png()
+      .png({ quality: 100 })
       .toFile(outPath);
     console.log(`Generated: ${s.name} (${s.size}x${s.size})`);
   }
 
-  // Also copy to dist if dist exists
-  const distPublic = path.join(__dirname, 'dist');
-  if (fs.existsSync(distPublic)) {
-    for (const s of sizes) {
-      fs.copyFileSync(path.join(__dirname, 'public', s.name), path.join(distPublic, s.name));
-    }
-  }
+  // Generate Base64 Data URI from the 180x180 touch icon for direct inline embedding
+  const touchIcon180Buffer = fs.readFileSync(path.join(__dirname, 'public', 'apple-touch-icon.png'));
+  const base64TouchIcon = `data:image/png;base64,${touchIcon180Buffer.toString('base64')}`;
 
-  console.log('ALL ICONS GENERATED SUCCESSFULLY');
+  const favicon32Buffer = fs.readFileSync(path.join(__dirname, 'public', 'favicon-32x32.png'));
+  const base64Favicon = `data:image/png;base64,${favicon32Buffer.toString('base64')}`;
+
+  // Update index.html with inline base64 icons + relative fallback links
+  const indexHtmlContent = `<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- Anti-Caching Directives for Mobile Safari & Modern Browsers -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <!-- 100% SAFARI-PROOF EMBEDDED APPLE TOUCH ICONS (Inline Base64 - Zero Network Dependency) -->
+    <link rel="apple-touch-icon" href="${base64TouchIcon}" />
+    <link rel="apple-touch-icon-precomposed" href="${base64TouchIcon}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="./apple-touch-icon-167x167.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="./apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="./apple-touch-icon-120x120.png" />
+
+    <!-- Favicon Links (Inline Base64 & SVG) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="${base64Favicon}" />
+    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+    <link rel="mask-icon" href="./icon.svg" color="#00f2fe" />
+
+    <!-- iOS Safari Web App Optimization -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SurgicalSIE" />
+    <meta name="application-name" content="SurgicalSIE" />
+    <meta name="theme-color" content="#020617" />
+    <meta name="msapplication-TileColor" content="#020617" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Surgical Innovation Engine (SIE) | Top 100 Portfolio & Patent Studio</title>
+    
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-titanium-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-cyan-500 selection:text-slate-950 overscroll-none">
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>
+`;
+
+  fs.writeFileSync(path.join(__dirname, 'index.html'), indexHtmlContent, 'utf8');
+  console.log('SAFARI-PROOF INDEX.HTML COMPILED WITH INLINE BASE64 ICON');
 }
 
-generateIcons().catch(err => {
+buildSafariProofIcons().catch(err => {
   console.error('Error generating icons:', err);
   process.exit(1);
 });
