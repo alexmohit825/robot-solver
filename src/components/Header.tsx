@@ -114,16 +114,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Items */}
           <div className="flex items-center space-x-2">
-            {/* iPhone QR Code Button */}
-            <button
-              onClick={onOpenQrModal}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-xs text-sky-300 font-bold transition-all shadow-sm"
-              title="Scan QR Code with iPhone Camera"
-            >
-              <QrCode className="w-3.5 h-3.5 text-sky-400" />
-              <span className="hidden sm:inline">iPhone QR</span>
-            </button>
-
             {/* Test Email Relay Button */}
             <button
               onClick={onOpenEmailModal}
@@ -131,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({
               title="Test Clinical Email Relay"
             >
               <Mail className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">Test Email</span>
+              <span className="hidden sm:inline">Test Email Relay</span>
             </button>
 
             {/* Surgeon Profile Button */}
