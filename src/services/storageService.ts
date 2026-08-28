@@ -1,7 +1,7 @@
 import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, SurgeonProfile, EmailRelayConfig } from '../types/vigilor';
 
 const STORAGE_KEYS = {
-  VERSION: 'vigilor_storage_version_v6_multicare',
+  VERSION: 'vigilor_storage_version_v7_multicare_team',
   RULES: 'vigilor_rules',
   SCHEDULERS: 'vigilor_schedulers',
   NOTIFICATIONS: 'vigilor_notifications',
@@ -11,7 +11,7 @@ const STORAGE_KEYS = {
   SENTINEL_PAUSED: 'vigilor_sentinel_paused',
 };
 
-const CURRENT_VERSION = '6.0.0_multicare_institute';
+const CURRENT_VERSION = '7.0.0_multicare_team_active';
 
 const DEFAULT_PROFILE: SurgeonProfile = {
   name: 'A. Alex Mohit',
@@ -32,7 +32,7 @@ const DEFAULT_RULES: ProtectionRule[] = [
     endTime: '17:00',
     debounceMinutes: 3,
     maskEventDetails: true,
-    assignedSchedulerIds: [],
+    assignedSchedulerIds: [], // Broadcasts to ALL active schedulers (Emily & Richona)
     excludedKeywords: ['#surgery', '#orcase', 'Clinic', 'Grand Rounds', 'Conference'],
     monitoredCalendarFolder: 'Personal',
     createdAt: new Date().toISOString(),
@@ -41,14 +41,24 @@ const DEFAULT_RULES: ProtectionRule[] = [
 
 const DEFAULT_SCHEDULERS: Scheduler[] = [
   {
-    id: 'sched_primary_1',
-    fullName: 'Surgery Scheduler',
+    id: 'sched_emily_maluyo',
+    fullName: 'Emily Jenie Maluyo',
     facilityName: 'MultiCare Neuroscience Institute OR Scheduling Desk',
-    email: 'mohalex@gmail.com', // Replace with your scheduler's email
-    phone: '+1 (206) 650-3283',
-    roleTitle: 'Primary OR Coordinator',
+    email: 'EmilyJenie.Maluyo@Multicare.org',
+    phone: '',
+    roleTitle: 'Surgical Coordinator',
     isActive: true,
-    notes: 'Receives automated schedule blackout notices for A. Alex Mohit, MD, PhD, FAANS.'
+    notes: 'Primary surgical coordinator. Receives automated Wednesday OR blackout notices.'
+  },
+  {
+    id: 'sched_richona_hill',
+    fullName: 'Richona Hill',
+    facilityName: 'MultiCare Neuroscience Institute OR Scheduling Desk',
+    email: 'Richona.Hill@Multicare.org',
+    phone: '',
+    roleTitle: 'Surgical Coordinator',
+    isActive: true,
+    notes: 'Surgical coordinator. Receives automated Wednesday OR blackout notices.'
   }
 ];
 
