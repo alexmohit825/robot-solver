@@ -10,5 +10,5 @@
 - **Deep Patent Analysis Studio:** Definitive filing recommendations (`FILE PROVISIONAL` vs `LEVERAGE EXPIRED PUBLIC DOMAIN`), 35 U.S.C. § 112 claim sets, and 10-point USPTO checklist.
 - **Mobile Safari PWA:** Live scannable QR code in header for 24/7 standalone iPhone access.
 
-## Live Deployment
-- **GitHub Pages:** [https://alexmohit825.github.io/Surgical-Innovations-engine/](https://alexmohit825.github.io/Surgical-Innovations-engine/)
+## Live Deployment (All-Lowercase URL)
+- **GitHub Pages:** [https://alexmohit825.github.io/surgical-innovations-engine/](https://alexmohit825.github.io/surgical-innovations-engine/)

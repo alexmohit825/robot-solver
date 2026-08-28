@@ -18,17 +18,19 @@ interface QRCodeModalProps {
 }
 
 export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
-  const [currentUrl, setCurrentUrl] = useState<string>('');
-  const [customUrl, setCustomUrl] = useState<string>('');
+  const [currentUrl, setCurrentUrl] = useState<string>('https://alexmohit825.github.io/surgical-innovations-engine/');
+  const [customUrl, setCustomUrl] = useState<string>('https://alexmohit825.github.io/surgical-innovations-engine/');
   const [copied, setCopied] = useState<boolean>(false);
 
   useEffect(() => {
-    const url = window.location.href;
-    setCurrentUrl(url);
-    setCustomUrl(url);
+    if (typeof window !== 'undefined') {
+      const url = window.location.href.toLowerCase();
+      setCurrentUrl(url);
+      setCustomUrl(url);
+    }
   }, []);
 
-  const activeUrl = customUrl || currentUrl || 'http://localhost:5173';
+  const activeUrl = customUrl || currentUrl || 'https://alexmohit825.github.io/surgical-innovations-engine/';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(activeUrl);
@@ -58,7 +60,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
 
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -75,7 +77,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
               level="H"
               includeMargin={false}
               imageSettings={{
-                src: "/icon.svg",
+                src: "./icon.svg",
                 x: undefined,
                 y: undefined,
                 height: 40,
@@ -91,7 +93,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
               <span>SCAN TARGET URL:</span>
               <button
                 onClick={handleCopy}
-                className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 text-[10px]"
+                className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 text-[10px] cursor-pointer"
               >
                 {copied ? <CheckCircle2 className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                 <span>{copied ? "Copied" : "Copy URL"}</span>
@@ -101,11 +103,11 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
               type="text"
               value={customUrl}
               onChange={(e) => setCustomUrl(e.target.value)}
-              placeholder="http://192.168.1.X:5173 or https://your-cloud-url.com"
+              placeholder="https://alexmohit825.github.io/surgical-innovations-engine/"
               className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg p-2 font-mono focus:outline-none focus:border-cyan-400"
             />
             <p className="text-[10px] text-slate-500 font-mono">
-              Tip: When on your local Wi-Fi, enter your computer's local IP (e.g. <span className="text-amber-400">http://192.168.1.150:5173</span>) to scan directly from your iPhone camera.
+              All-lowercase canonical URL: <span className="text-cyan-400">https://alexmohit825.github.io/surgical-innovations-engine/</span>
             </p>
           </div>
 
@@ -145,7 +147,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
         <div className="p-4 border-t border-slate-800 bg-slate-950 flex items-center justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-mono rounded-lg transition-colors"
+            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-mono rounded-lg transition-colors cursor-pointer"
           >
             Close
           </button>
