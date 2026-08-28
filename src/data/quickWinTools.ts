@@ -1,4 +1,4 @@
-import { QuickWinTool, PatentRecommendation } from '../types';
+import { QuickWinTool, PatentRecommendation, BlueprintDiagramType } from '../types';
 
 const SEED_QUICK_WINS: Partial<QuickWinTool>[] = [
   {
@@ -140,6 +140,12 @@ function generateCompleteQuickWins(): QuickWinTool[] {
     const catIndex = (rank - 1) % QUICK_WIN_CATEGORIES.length;
     const category = seed?.category || QUICK_WIN_CATEGORIES[catIndex];
 
+    let diagram: BlueprintDiagramType = 'probe_dissector';
+    if (category === 'Suction & Fluidics') diagram = 'frazier_suction';
+    else if (category === 'Ergonomic Grips') diagram = 'kerrison_rongeur';
+    else if (category === 'Lighting & Optical' || category === 'Vision & Anti-Glare') diagram = 'light_pipe';
+    else if (category === 'Dural Fixation') diagram = 'dural_clip_applier';
+
     const timeOption: '< 30 Days (Direct 3D Print / Off-Shelf)' | '60 Days (Simple CNC / Silicone Mold)' | '90 Days (Class I Registration)' = 
       rank % 3 === 0 
         ? '< 30 Days (Direct 3D Print / Off-Shelf)' 
@@ -172,6 +178,7 @@ function generateCompleteQuickWins(): QuickWinTool[] {
         materialSpec: 'USP Class VI Autoclavable Liquid Silicone Rubber (LSR) / ASTM F136 Ti',
         finish: 'Matte Medical Satin (Ra 0.8)',
         scale: '1:1',
+        diagramType: diagram,
         views: ['Isometric 3D', 'Side Elevation', 'Plan View'],
         dimensions: [
           { label: 'Length (L)', value: `${45 + (rank % 30)} mm`, tolerance: '±0.15 mm' },

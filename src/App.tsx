@@ -1,302 +1,244 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
-import { SentinelBanner } from './components/SentinelBanner';
-import { DashboardView } from './components/DashboardView';
-import { RuleManager } from './components/RuleManager';
-import { SchedulerDirectory } from './components/SchedulerDirectory';
-import { SimulatorPlayground } from './components/SimulatorPlayground';
-import { AuditLogView } from './components/AuditLogView';
-import { CalendarAuditView } from './components/CalendarAuditView';
-import { ICloudConnectionModal } from './components/iCloudConnectionModal';
-import { ProfileModal } from './components/ProfileModal';
-import { EmailDiagnosticsModal } from './components/EmailDiagnosticsModal';
+import { InnovationCardDeck } from './components/InnovationCardDeck';
+import { HandheldInstrumentsDeck } from './components/HandheldInstrumentsDeck';
+import { QuickWinToolsDeck } from './components/QuickWinToolsDeck';
+import { ProcedureMatrixView } from './components/ProcedureMatrixView';
+import { CrossSectionBottleneckView } from './components/CrossSectionBottleneckView';
+import { PatentSubmissionStudio } from './components/PatentSubmissionStudio';
+import { ExportModal } from './components/ExportModal';
+import { InnovationDetailModal } from './components/InnovationDetailModal';
+import { PatentAnalysisDrawer } from './components/PatentAnalysisDrawer';
+import { PrototypeBlueprintModal } from './components/PrototypeBlueprintModal';
+import { QRCodeModal } from './components/QRCodeModal';
+import { TOP_100_INNOVATIONS } from './data/top100Innovations';
+import { TOP_100_HANDHELD_SUITE } from './data/top100HandheldInstruments';
+import { QUICK_WIN_TOOLS } from './data/quickWinTools';
+import { InnovationDossier, SurgeonReviewState, ReviewStatus, BlueprintSpec, KinematicParameters } from './types';
 
-import { storageService } from './services/storageService';
-import { ICloudCalDAVClient } from './engine/caldavClient';
-import { generateClinicalEmail } from './engine/dispatcher';
-import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, SurgeonProfile, EmailRelayConfig } from './types/vigilor';
-
-export const App: React.FC = () => {
-  // App State
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit' | 'calendar-audit'>('dashboard');
-  const [rules, setRules] = useState<ProtectionRule[]>(storageService.getRules());
-  const [schedulers, setSchedulers] = useState<Scheduler[]>(storageService.getSchedulers());
-  const [notifications, setNotifications] = useState<NotificationRecord[]>(storageService.getNotifications());
-  const [icloudConfig, setIcloudConfig] = useState<ICloudConnectionConfig>(storageService.getICloudConfig());
-  const [emailConfig, setEmailConfig] = useState<EmailRelayConfig>(storageService.getEmailConfig());
-  const [profile, setProfile] = useState<SurgeonProfile>(storageService.getSurgeonProfile());
-  const [isPaused, setIsPaused] = useState<boolean>(storageService.isSentinelPaused());
+export function App() {
+  const [activeTab, setActiveTab] = useState<'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export'>('portfolio');
+  const [selectedInnovation, setSelectedInnovation] = useState<InnovationDossier | null>(null);
+  const [selectedPatentInnovation, setSelectedPatentInnovation] = useState<InnovationDossier | null>(null);
+  const [isQRCodeOpen, setIsQRCodeOpen] = useState<boolean>(false);
   
-  // Modals & UI States
-  const [isICloudModalOpen, setIsICloudModalOpen] = useState<boolean>(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
-  const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
-  const [isSyncing, setIsSyncing] = useState<boolean>(false);
-  const [lastSyncTime, setLastSyncTime] = useState<string | null>(icloudConfig.lastSyncAt);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  // State for active blueprint modal
+  const [activeBlueprint, setActiveBlueprint] = useState<{
+    title: string;
+    rank: number;
+    category: string;
+    blueprint: BlueprintSpec;
+    parameters?: KinematicParameters;
+  } | null>(null);
 
-  // Show quick toast helper
-  const triggerToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 4000);
-  };
-
-  // Profile Handlers
-  const handleSaveProfile = (updatedProfile: SurgeonProfile) => {
-    setProfile(updatedProfile);
-    storageService.saveSurgeonProfile(updatedProfile);
-    triggerToast('Surgeon profile updated.');
-  };
-
-  // Rule Handlers
-  const handleSaveRules = (updatedRules: ProtectionRule[]) => {
-    setRules(updatedRules);
-    storageService.saveRules(updatedRules);
-    triggerToast('Protection rules saved successfully.');
-  };
-
-  const handleToggleRule = (ruleId: string) => {
-    const updated = rules.map(r => r.id === ruleId ? { ...r, isActive: !r.isActive } : r);
-    setRules(updated);
-    storageService.saveRules(updated);
-  };
-
-  // Scheduler Handlers
-  const handleSaveSchedulers = (updatedSchedulers: Scheduler[]) => {
-    setSchedulers(updatedSchedulers);
-    storageService.saveSchedulers(updatedSchedulers);
-    triggerToast('Scheduler directory updated.');
-  };
-
-  const handleSendTestPing = (scheduler: Scheduler) => {
-    const emailPayload = generateClinicalEmail(
-      profile,
-      scheduler,
-      'Wednesday from 12:00 PM to 5:00 PM',
-      'Personal Block (OR Blackout)',
-      `test_${Date.now()}`
-    );
-
-    const testRecord: NotificationRecord = {
-      id: `notif_test_${Date.now()}`,
-      ruleId: 'rule_test_ping',
-      ruleName: 'Verification Handshake Test',
-      schedulerId: scheduler.id,
-      schedulerName: scheduler.fullName,
-      schedulerFacility: scheduler.facilityName,
-      recipientEmail: scheduler.email,
-      eventUid: 'evt_ping_test',
-      eventSummary: 'VigilOR Test Verification Notice',
-      eventStart: new Date().toISOString(),
-      eventEnd: new Date().toISOString(),
-      emailSubject: emailPayload.subject,
-      emailHtml: emailPayload.html,
-      emailText: emailPayload.text,
-      deliveryStatus: 'SENT',
-      sentAt: new Date().toISOString(),
-      ackStatus: 'UNACKNOWLEDGED'
+  // Persistent review states across sessions
+  const [reviewStates, setReviewStates] = useState<Record<string, SurgeonReviewState>>(() => {
+    const saved = localStorage.getItem('sie_surgeon_reviews');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved reviews', e);
+      }
+    }
+    return {
+      'inn-01': {
+        status: 'shortlisted',
+        surgeonNotes: 'High priority for our robotic prone lateral program. Eliminates line-of-sight fiducial bumps.',
+        flaggedForPatentDraft: true,
+        lastUpdated: new Date().toISOString()
+      },
+      'inn-02': {
+        status: 'shortlisted',
+        surgeonNotes: 'Directly addresses psoas plexus ischemia during prolonged lateral retractor deployment.',
+        flaggedForPatentDraft: true,
+        lastUpdated: new Date().toISOString()
+      },
+      'inn-21': {
+        status: 'shortlisted',
+        surgeonNotes: 'Essential for skull base and cervical foraminal osteophyte clearing without thermal dural injury.',
+        flaggedForPatentDraft: true,
+        lastUpdated: new Date().toISOString()
+      },
+      'inn-76': {
+        status: 'shortlisted',
+        surgeonNotes: 'Solves the L4-L5 iliac crest cage impaction problem. Mallet strike without pin shear.',
+        flaggedForPatentDraft: true,
+        lastUpdated: new Date().toISOString()
+      }
     };
+  });
 
-    const updated = [testRecord, ...notifications];
-    setNotifications(updated);
-    storageService.saveNotifications(updated);
-    
-    // Open default mail client
-    const mailto = `mailto:${scheduler.email}?subject=${encodeURIComponent(emailPayload.subject)}&body=${encodeURIComponent(emailPayload.text)}`;
-    window.open(mailto, '_blank');
+  useEffect(() => {
+    localStorage.setItem('sie_surgeon_reviews', JSON.stringify(reviewStates));
+  }, [reviewStates]);
 
-    triggerToast(`Official test notice prepared for ${scheduler.fullName} (${scheduler.email}).`);
+  const handleUpdateReviewState = (id: string, updatedFields: Partial<SurgeonReviewState>) => {
+    setReviewStates(prev => ({
+      ...prev,
+      [id]: {
+        ...(prev[id] || {
+          status: 'unreviewed',
+          surgeonNotes: '',
+          flaggedForPatentDraft: false,
+          lastUpdated: new Date().toISOString()
+        }),
+        ...updatedFields,
+        lastUpdated: new Date().toISOString()
+      }
+    }));
   };
 
-  // Notification / Ack Handlers
-  const handleRecordNotification = (newRecord: NotificationRecord) => {
-    const updated = [newRecord, ...notifications];
-    setNotifications(updated);
-    storageService.saveNotifications(updated);
-    triggerToast(`Email alert recorded for ${newRecord.schedulerName}`);
+  const handleQuickStatusChange = (id: string, status: ReviewStatus) => {
+    handleUpdateReviewState(id, {
+      status,
+      flaggedForPatentDraft: status === 'shortlisted' ? true : false
+    });
   };
 
-  const handleAckNotification = (notificationId: string, status: 'ACKNOWLEDGED' | 'CONFLICT') => {
-    storageService.updateNotificationAck(notificationId, status);
-    setNotifications(storageService.getNotifications());
-    triggerToast(`Alert status updated to ${status}.`);
-  };
+  const shortlistCount = Object.values(reviewStates).filter(
+    r => r.status === 'shortlisted' || r.flaggedForPatentDraft
+  ).length;
 
-  const handleClearLogs = () => {
-    storageService.resetToDefaults();
-    setRules(storageService.getRules());
-    setSchedulers(storageService.getSchedulers());
-    setNotifications(storageService.getNotifications());
-    setProfile(storageService.getSurgeonProfile());
-    setEmailConfig(storageService.getEmailConfig());
-    triggerToast('History reset to clean state.');
-  };
-
-  // CalDAV Sync Trigger
-  const handleManualSync = async () => {
-    setIsSyncing(true);
-    const client = new ICloudCalDAVClient(icloudConfig.appleId, icloudConfig.appSpecificPasswordMasked, icloudConfig.selectedCalendarName);
-    const report = await client.performDeltaSync();
-    
-    setIsSyncing(false);
-    const nowIso = new Date().toISOString();
-    setLastSyncTime(nowIso);
-    
-    const updatedConfig = { ...icloudConfig, lastSyncAt: nowIso, isConnected: true };
-    setIcloudConfig(updatedConfig);
-    storageService.saveICloudConfig(updatedConfig);
-    
-    triggerToast(`iCloud CalDAV Delta Sync: Scanned ${report.totalEventsScanned} calendar events.`);
-  };
-
-  // Snooze / Pause Toggle
-  const handleTogglePause = () => {
-    const nextState = !isPaused;
-    setIsPaused(nextState);
-    storageService.setSentinelPaused(nextState);
-    triggerToast(nextState ? 'Sentinel paused. Alerts suspended.' : 'Sentinel monitoring resumed.');
-  };
+  const totalCatalogCount = TOP_100_INNOVATIONS.length + TOP_100_HANDHELD_SUITE.length + QUICK_WIN_TOOLS.length;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-500 text-white font-semibold text-xs py-3 px-5 rounded-2xl shadow-2xl shadow-emerald-500/30 flex items-center space-x-2 animate-bounce">
-          <span>✓</span>
-          <span>{toastMessage}</span>
-        </div>
-      )}
-
-      {/* Top Header */}
-      <Header
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+      {/* Top Telemetry Header */}
+      <Header 
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        isPaused={isPaused}
-        isSyncing={isSyncing}
-        onManualSync={handleManualSync}
-        icloudConfig={icloudConfig}
-        onOpenICloudModal={() => setIsICloudModalOpen(true)}
-        profile={profile}
-        onOpenProfileModal={() => setIsProfileModalOpen(true)}
-        onOpenEmailModal={() => setIsEmailModalOpen(true)}
+        shortlistCount={shortlistCount}
+        totalInnovationsCount={totalCatalogCount}
+        onOpenQRCode={() => setIsQRCodeOpen(true)}
       />
 
-      {/* Sentinel Live Status Banner */}
-      <SentinelBanner
-        isPaused={isPaused}
-        onTogglePause={handleTogglePause}
-        rules={rules}
-        schedulers={schedulers}
-        lastSyncTime={lastSyncTime}
-      />
-
-      {/* Main View Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'dashboard' && (
-          <DashboardView
-            rules={rules}
-            schedulers={schedulers}
-            notifications={notifications}
-            profile={profile}
-            icloudConfig={icloudConfig}
-            onNavigate={setActiveTab}
-            onToggleRule={handleToggleRule}
-            onOpenICloudModal={() => setIsICloudModalOpen(true)}
+      {/* Main Viewport */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {activeTab === 'portfolio' && (
+          <InnovationCardDeck 
+            innovations={TOP_100_INNOVATIONS}
+            reviewStates={reviewStates}
+            onSelectInnovation={setSelectedInnovation}
+            onSelectPatentAnalysis={setSelectedPatentInnovation}
+            onSelectBlueprint={(inn) => {
+              setActiveBlueprint({
+                title: inn.title,
+                rank: inn.rank,
+                category: inn.category,
+                blueprint: inn.blueprint,
+                parameters: inn.parameters
+              });
+            }}
+            onQuickStatusChange={handleQuickStatusChange}
           />
         )}
 
-        {activeTab === 'calendar-audit' && (
-          <CalendarAuditView
-            rules={rules}
-            schedulers={schedulers}
-            profile={profile}
-            onRecordNotification={handleRecordNotification}
-            onNavigate={setActiveTab}
+        {activeTab === 'handheld' && (
+          <HandheldInstrumentsDeck 
+            onSelectBlueprint={(title, rank, category, blueprint) => {
+              setActiveBlueprint({
+                title,
+                rank,
+                category,
+                blueprint
+              });
+            }}
           />
         )}
 
-        {activeTab === 'rules' && (
-          <RuleManager
-            rules={rules}
-            schedulers={schedulers}
-            onSaveRules={handleSaveRules}
+        {activeTab === 'quickwins' && (
+          <QuickWinToolsDeck 
+            onSelectBlueprint={(title, rank, category, blueprint) => {
+              setActiveBlueprint({
+                title,
+                rank,
+                category,
+                blueprint
+              });
+            }}
           />
         )}
 
-        {activeTab === 'schedulers' && (
-          <SchedulerDirectory
-            schedulers={schedulers}
-            onSaveSchedulers={handleSaveSchedulers}
-            onSendTestPing={handleSendTestPing}
+        {activeTab === 'procedures' && (
+          <ProcedureMatrixView 
+            onSelectInnovation={setSelectedInnovation}
           />
         )}
 
-        {activeTab === 'simulator' && (
-          <SimulatorPlayground
-            rules={rules}
-            schedulers={schedulers}
-            profile={profile}
-            onRecordNotification={handleRecordNotification}
-            onAckNotification={handleAckNotification}
+        {activeTab === 'bottlenecks' && (
+          <CrossSectionBottleneckView 
+            onSelectInnovation={setSelectedInnovation}
           />
         )}
 
-        {activeTab === 'audit' && (
-          <AuditLogView
-            notifications={notifications}
-            schedulers={schedulers}
-            onAckNotification={handleAckNotification}
-            onClearLogs={handleClearLogs}
+        {activeTab === 'patent_studio' && (
+          <PatentSubmissionStudio 
+            innovations={TOP_100_INNOVATIONS}
+            reviewStates={reviewStates}
+          />
+        )}
+
+        {activeTab === 'export' && (
+          <ExportModal 
+            innovations={TOP_100_INNOVATIONS}
+            reviewStates={reviewStates}
+            onSelectInnovation={setSelectedInnovation}
           />
         )}
       </main>
 
-      {/* Profile Modal */}
-      <ProfileModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
-        profile={profile}
-        onSaveProfile={handleSaveProfile}
-      />
+      {/* Detailed Honing Modal */}
+      {selectedInnovation && (
+        <InnovationDetailModal 
+          innovation={selectedInnovation}
+          reviewState={reviewStates[selectedInnovation.id] || {
+            status: 'unreviewed',
+            surgeonNotes: '',
+            flaggedForPatentDraft: false,
+            lastUpdated: new Date().toISOString()
+          }}
+          onUpdateReviewState={handleUpdateReviewState}
+          onOpenPatentAnalysis={(inn) => {
+            setSelectedPatentInnovation(inn);
+          }}
+          onClose={() => setSelectedInnovation(null)}
+        />
+      )}
 
-      {/* iCloud Connection Modal */}
-      <ICloudConnectionModal
-        isOpen={isICloudModalOpen}
-        onClose={() => setIsICloudModalOpen(false)}
-        config={icloudConfig}
-        onSaveConfig={(updated) => {
-          setIcloudConfig(updated);
-          storageService.saveICloudConfig(updated);
-          triggerToast('iCloud configuration saved.');
-        }}
-      />
+      {/* Deep Patent Analysis Drawer */}
+      {selectedPatentInnovation && (
+        <PatentAnalysisDrawer 
+          innovation={selectedPatentInnovation}
+          onClose={() => setSelectedPatentInnovation(null)}
+        />
+      )}
 
-      {/* Clinical Email Relay Diagnostics Modal */}
-      <EmailDiagnosticsModal
-        isOpen={isEmailModalOpen}
-        onClose={() => setIsEmailModalOpen(false)}
-        emailConfig={emailConfig}
-        onSaveEmailConfig={(updated) => {
-          setEmailConfig(updated);
-          storageService.saveEmailConfig(updated);
-          triggerToast('Email relay settings saved.');
-        }}
-        icloudConfig={icloudConfig}
-        profile={profile}
-        schedulers={schedulers}
-      />
+      {/* Prototype Line Drawing / CAD Blueprint Modal */}
+      {activeBlueprint && (
+        <PrototypeBlueprintModal 
+          title={activeBlueprint.title}
+          rank={activeBlueprint.rank}
+          category={activeBlueprint.category}
+          blueprint={activeBlueprint.blueprint}
+          parameters={activeBlueprint.parameters}
+          onClose={() => setActiveBlueprint(null)}
+        />
+      )}
 
-      {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>VigilOR • {profile.name}, {profile.title} • {profile.specialty}</span>
-          <span>Apple iCloud CalDAV (RFC 4791) • MultiCare Neuroscience Institute</span>
-        </div>
+      {/* iPhone Safari QR Code Modal */}
+      {isQRCodeOpen && (
+        <QRCodeModal 
+          onClose={() => setIsQRCodeOpen(false)}
+        />
+      )}
+
+      {/* Persistent Footer */}
+      <footer className="border-t border-slate-800/80 bg-slate-950 py-4 text-center text-xs font-mono text-slate-500">
+        <p>Surgical Innovation Engine (SIE) • GitHub Pages Deployment Ready • Client-Side Encrypted (AES-256)</p>
       </footer>
     </div>
   );
-};
+}
 
 export default App;

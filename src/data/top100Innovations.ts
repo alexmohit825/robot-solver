@@ -1,4 +1,4 @@
-import { InnovationDossier, EquipmentCategory, DonorField } from '../types';
+import { InnovationDossier, EquipmentCategory, DonorField, BlueprintDiagramType } from '../types';
 
 // Curated seed archetypes
 const SEED_INNOVATIONS: Partial<InnovationDossier>[] = [
@@ -90,7 +90,7 @@ const SEED_INNOVATIONS: Partial<InnovationDossier>[] = [
     clinicalProblemStatement: 'High-speed rotary burrs generate friction heat >50°C and shoot bone dust sludge that clogs suction and risks dural tears.',
     mechanicalDelta: 'Piezo-ultrasonic micro-horn that emulsifies mineralized bone at 36 kHz while cold-saline micro-vortex instantly scavenges slurry at the tip.',
     kinematicPrinciple: 'Selective ultrasonic bone cavitation (tissue-selective: soft neural tissue remains undamaged).',
-    diagramType: 'cavitation_burr',
+    diagramType: 'ultrasonic_horn',
     deepPatentAnalysis: {
       filingRecommendation: 'RECOMMENDED: FILE PROVISIONAL PATENT',
       filingRecommendationRationale: 'Coaxial vortex fluidic sleeve on a bayoneted ultrasonic osteotome has zero prior art overlap in spine or neurosurgery.',
@@ -242,7 +242,7 @@ const SEED_INNOVATIONS: Partial<InnovationDossier>[] = [
     clinicalProblemStatement: 'Throwing needle sutures and tying knots to repair a torn thecal sac at the bottom of a 14mm tube is almost impossible and often fails.',
     mechanicalDelta: 'A bayoneted 1.2mm applicator that fires non-penetrating U-shaped titanium clips with one finger pull, latching dural edges together in 3 seconds.',
     kinematicPrinciple: 'Cam-driven non-penetrating arcuate micro-clip eversion.',
-    diagramType: 'micro_clip',
+    diagramType: 'dural_clip_applier',
     deepPatentAnalysis: {
       filingRecommendation: 'RECOMMENDED: FILE PROVISIONAL PATENT',
       filingRecommendationRationale: 'Direct adaptation of vascular arcuate clips to bayoneted dural closure represents an extremely strong patentable medical device application.',
@@ -270,7 +270,6 @@ const SEED_INNOVATIONS: Partial<InnovationDossier>[] = [
   }
 ];
 
-// Helper to generate the complete 100 portfolio
 const CATEGORIES: EquipmentCategory[] = [
   'Access & Retraction',
   'Drills & Cavitation',
@@ -303,6 +302,16 @@ function generateCompleteTop100(): InnovationDossier[] {
     const catIndex = (rank - 1) % CATEGORIES.length;
     const category = seed?.category || CATEGORIES[catIndex];
     const donor = seed?.donorField || DONOR_FIELDS[(rank * 3) % DONOR_FIELDS.length];
+
+    let diagram: BlueprintDiagramType = 'probe_dissector';
+    if (category === 'Access & Retraction') diagram = 'pressure_retractor';
+    else if (category === 'Drills & Cavitation') diagram = 'ultrasonic_horn';
+    else if (category === 'Tables & Patient Positioning') diagram = 'dynamic_table';
+    else if (category === 'Visualization & Optics') diagram = 'light_pipe';
+    else if (category === 'Maneuvering & Micro-Instruments') diagram = 'vertebral_lock';
+    else if (category === 'Closure & Dural Repair') diagram = 'dural_clip_applier';
+
+    const finalDiagram: BlueprintDiagramType = (seed?.diagramType as BlueprintDiagramType) || diagram;
 
     const shaftLen = 80 + ((rank * 7) % 110);
     const bayonetAng = 15 + ((rank * 5) % 35);
@@ -360,6 +369,7 @@ function generateCompleteTop100(): InnovationDossier[] {
         materialSpec: isRadio ? 'ASTM F2026 PEEK + ASTM F136 Ti-6Al-4V ELI' : 'ASTM F136 Ti-6Al-4V ELI (Grade 5 Titanium)',
         finish: 'Bead-Blasted Matte TiAlN Anti-Reflective Black Ceramic (< 0.4 Ra)',
         scale: '1:1 (Full Scale)',
+        diagramType: finalDiagram,
         views: ['Isometric 3D', 'Side Elevation', 'Plan View', 'Section A-A'],
         dimensions: [
           { label: 'Overall Reach (L1)', value: `${shaftLen}.00 mm`, tolerance: '±0.10 mm' },
@@ -418,7 +428,7 @@ function generateCompleteTop100(): InnovationDossier[] {
         freedomToOperateAssessment: 'Clear (High FTO)',
         commercialExclusivityPotential: 'High (Pioneer Patent)'
       },
-      diagramType: seed?.diagramType || 'bayonet_articulator'
+      diagramType: finalDiagram
     };
 
     result.push(dossier);

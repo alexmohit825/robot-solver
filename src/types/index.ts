@@ -121,11 +121,30 @@ export interface BlueprintDimension {
   tolerance: string;
 }
 
+export type BlueprintDiagramType = 
+  | 'kerrison_rongeur'
+  | 'frazier_suction'
+  | 'bayonet_bipolar'
+  | 'probe_dissector'
+  | 'handheld_retractor'
+  | 'ultrasonic_horn'
+  | 'vertebral_inserter'
+  | 'dural_clip_applier'
+  | 'light_pipe'
+  | 'dynamic_table'
+  | 'pressure_retractor'
+  | 'steerable_curette'
+  | 'cavitation_burr'
+  | 'micro_clip'
+  | 'vertebral_lock'
+  | 'gecko_sealant';
+
 export interface BlueprintSpec {
   partNumber: string;
   materialSpec: string;
   finish: string;
   scale: string;
+  diagramType: BlueprintDiagramType;
   views: ('Isometric 3D' | 'Side Elevation' | 'Plan View' | 'Section A-A')[];
   dimensions: BlueprintDimension[];
   criticalFeatures: string[];
@@ -173,7 +192,7 @@ export interface InnovationDossier {
   };
   
   deepPatentAnalysis: DeepPatentAnalysis;
-  diagramType: 'bayonet_articulator' | 'pressure_retractor' | 'light_pipe' | 'cavitation_burr' | 'vertebral_lock' | 'micro_clip' | 'dynamic_table' | 'steerable_curette' | 'fluidic_scavenger' | 'gecko_sealant';
+  diagramType: BlueprintDiagramType;
 }
 
 export type ReviewStatus = 'unreviewed' | 'shortlisted' | 'refining' | 'rejected';
@@ -188,6 +207,7 @@ export interface SurgeonReviewState {
   lastUpdated: string;
 }
 
+// 1. Quick-Win Accessories Schema (< 30-60 Days, 3D Print / Silicone Mold)
 export interface QuickWinTool {
   id: string;
   rank: number;
@@ -201,4 +221,30 @@ export interface QuickWinTool {
   affectedSpecialties: string[];
   blueprint: BlueprintSpec;
   patentRecommendation: PatentRecommendation;
+}
+
+// 2. Low-Capital Handheld Instruments Schema (Suctions, Rongeurs, Probes, Bipolars, Retractors)
+export type HandheldCategory = 
+  | 'Suctions & Fluidic Scavengers'
+  | 'Rongeurs & Micro-Punches'
+  | 'Probes & Micro-Dissectors'
+  | 'Bipolar & Electrosurgical Tools'
+  | 'Handheld Retractors & Specula'
+  | 'Micro-Elevators & Curettes';
+
+export interface HandheldInstrument {
+  id: string;
+  rank: number;
+  title: string;
+  category: HandheldCategory;
+  primaryTarget: string; // e.g. "MIS Tubular Decompression", "Acoustic Neuroma", "ACDF"
+  machiningMethod: string; // e.g. "Wire-EDM + CNC Lathe + Passivation", "Laser Welded ASTM F899 Steel"
+  estimatedPrototypingCost: string; // e.g. "$450 - $900"
+  prototypingLeadTimeDays: number; // e.g. 14, 21, 30 days
+  clinicalAdvantage: string;
+  mechanicalInnovation: string;
+  ergonomicHandpieceDesign: string;
+  materials: string;
+  patentStrategy: PatentRecommendation;
+  blueprint: BlueprintSpec;
 }

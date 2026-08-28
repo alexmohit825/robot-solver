@@ -1,225 +1,190 @@
 import React from 'react';
-import { ShieldCheck, RefreshCw, Calendar, Users, Sliders, PlayCircle, History, Cloud, Mail, FileSearch } from 'lucide-react';
-import { ICloudConnectionConfig, SurgeonProfile } from '../types/vigilor';
+import { 
+  Layers, 
+  Cpu, 
+  ShieldCheck, 
+  FileText, 
+  Award, 
+  Zap, 
+  Scale, 
+  QrCode,
+  GitFork,
+  Wrench
+} from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit' | 'calendar-audit';
-  setActiveTab: (tab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit' | 'calendar-audit') => void;
-  isPaused: boolean;
-  isSyncing: boolean;
-  onManualSync: () => void;
-  icloudConfig: ICloudConnectionConfig;
-  onOpenICloudModal: () => void;
-  profile: SurgeonProfile;
-  onOpenProfileModal: () => void;
-  onOpenEmailModal: () => void;
+  activeTab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export';
+  setActiveTab: (tab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export') => void;
+  shortlistCount: number;
+  totalInnovationsCount: number;
+  onOpenQRCode: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
-  isPaused,
-  isSyncing,
-  onManualSync,
-  icloudConfig,
-  onOpenICloudModal,
-  profile,
-  onOpenProfileModal,
-  onOpenEmailModal,
+  shortlistCount,
+  totalInnovationsCount,
+  onOpenQRCode
 }) => {
   return (
-    <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo & Brand */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('dashboard')}>
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <ShieldCheck className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xl font-bold tracking-tight text-white">Vigil<span className="text-emerald-400">OR</span></span>
-                <span className="px-2 py-0.5 text-xs font-semibold uppercase tracking-wider rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  Email Sentinel
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 hidden sm:block">Autonomous OR Schedule Sentinel • MultiCare Neuroscience Institute</p>
-            </div>
+    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+      {/* Top Banner / Status Line */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+        {/* Branding & Master Operator Persona */}
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-cyan-500 to-teal-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/30">
+            <Cpu className="w-6 h-6 text-slate-950 stroke-[2.5]" />
           </div>
-
-          {/* Center Navigation Tabs */}
-          <nav className="hidden md:flex items-center space-x-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700/50">
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'dashboard'
-                  ? 'bg-emerald-500 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              <Calendar className="w-4 h-4" />
-              <span>Overview</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('calendar-audit')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'calendar-audit'
-                  ? 'bg-emerald-500 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              <FileSearch className="w-4 h-4 text-emerald-400" />
-              <span>Calendar Audit</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('rules')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'rules'
-                  ? 'bg-emerald-500 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              <Sliders className="w-4 h-4" />
-              <span>Protection Rules</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('schedulers')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'schedulers'
-                  ? 'bg-emerald-500 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              <Users className="w-4 h-4" />
-              <span>Scheduler Inboxes</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('simulator')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'simulator'
-                  ? 'bg-emerald-500 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              <PlayCircle className="w-4 h-4" />
-              <span>Email Simulator</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('audit')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'audit'
-                  ? 'bg-emerald-500 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-              }`}
-            >
-              <History className="w-4 h-4" />
-              <span>Audit Logs</span>
-            </button>
-          </nav>
-
-          {/* Right Action Items */}
-          <div className="flex items-center space-x-2">
-            {/* Test Email Relay Button */}
-            <button
-              onClick={onOpenEmailModal}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-xs text-emerald-300 font-bold transition-all shadow-sm"
-              title="Test Clinical Email Relay"
-            >
-              <Mail className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">Test Email Relay</span>
-            </button>
-
-            {/* Surgeon Profile Button */}
-            <button
-              onClick={onOpenProfileModal}
-              className="flex items-center space-x-2 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-xs text-slate-200 transition-colors"
-              title="Edit Profile & Credentials"
-            >
-              <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-[10px]">
-                {profile.name.split(' ').filter(n => n.length > 0).map(n => n[0]).join('').substring(0, 2)}
-              </div>
-              <span className="hidden lg:inline font-semibold">{profile.name}</span>
-            </button>
-
-            {/* iCloud Status Pill */}
-            <button
-              onClick={onOpenICloudModal}
-              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700 text-xs text-slate-300 transition-colors"
-              title="iCloud CalDAV Settings"
-            >
-              <Cloud className="w-3.5 h-3.5 text-sky-400" />
-              <span className="hidden xl:inline font-medium">iCloud:</span>
-              <span className="text-emerald-400 font-semibold">Active</span>
-            </button>
-
-            {/* Sync Button */}
-            <button
-              onClick={onManualSync}
-              disabled={isSyncing}
-              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-all disabled:opacity-50"
-              title="Trigger CalDAV Delta Sync"
-            >
-              <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin text-emerald-400' : ''}`} />
-            </button>
+          <div>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
+                SURGICAL INNOVATION ENGINE <span className="text-xs px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono">v1.4</span>
+              </h1>
+            </div>
+            <p className="text-xs text-slate-400 font-mono flex items-center gap-2">
+              <span>Cross-Disciplinary R&D</span>
+              <span className="text-slate-600">•</span>
+              <span className="text-amber-400">Master Surgeon Curation Studio & Patent Center</span>
+            </p>
           </div>
         </div>
 
-        {/* Mobile Navigation bar */}
-        <div className="flex md:hidden overflow-x-auto space-x-1 py-2 border-t border-slate-800 no-scrollbar">
+        {/* Global Action & Metric Badges */}
+        <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono">
+          
+          {/* iPhone QR Code Quick Access Button */}
           <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
-              activeTab === 'dashboard' ? 'bg-emerald-500 text-white' : 'text-slate-400'
-            }`}
+            onClick={onOpenQRCode}
+            className="px-3 py-1.5 rounded-lg bg-cyan-950/80 text-cyan-300 border border-cyan-700/80 hover:bg-cyan-900 flex items-center space-x-1.5 shadow-md shadow-cyan-500/10 transition-all font-semibold"
+            title="Scan QR Code to open on iPhone Safari"
           >
-            Overview
+            <QrCode className="w-3.5 h-3.5 text-cyan-400" />
+            <span>📱 iPhone Safari QR</span>
           </button>
+
+          <div className="bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center space-x-2">
+            <Award className="w-3.5 h-3.5 text-teal-400" />
+            <span className="text-slate-400">Total Portfolio:</span>
+            <span className="text-white font-semibold">300 Instruments</span>
+          </div>
+
           <button
-            onClick={() => setActiveTab('calendar-audit')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
-              activeTab === 'calendar-audit' ? 'bg-emerald-500 text-white' : 'text-slate-400'
+            onClick={() => setActiveTab('patent_studio')}
+            className={`px-3 py-1.5 rounded-lg border flex items-center space-x-2 transition-all ${
+              activeTab === 'patent_studio'
+                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' 
+                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
             }`}
           >
-            Calendar Audit
+            <Scale className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Patent Studio</span>
           </button>
+
           <button
-            onClick={() => setActiveTab('rules')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
-              activeTab === 'rules' ? 'bg-emerald-500 text-white' : 'text-slate-400'
+            onClick={() => setActiveTab('export')}
+            className={`px-3 py-1.5 rounded-lg border flex items-center space-x-2 transition-all ${
+              shortlistCount > 0 
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30' 
+                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
             }`}
           >
-            Rules
-          </button>
-          <button
-            onClick={() => setActiveTab('schedulers')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
-              activeTab === 'schedulers' ? 'bg-emerald-500 text-white' : 'text-slate-400'
-            }`}
-          >
-            Inboxes
-          </button>
-          <button
-            onClick={() => setActiveTab('simulator')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
-              activeTab === 'simulator' ? 'bg-emerald-500 text-white' : 'text-slate-400'
-            }`}
-          >
-            Simulator
-          </button>
-          <button
-            onClick={() => setActiveTab('audit')}
-            className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
-              activeTab === 'audit' ? 'bg-emerald-500 text-white' : 'text-slate-400'
-            }`}
-          >
-            Audit Logs
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+            <span>Shortlist:</span>
+            <span className="font-bold text-white px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-300">
+              {shortlistCount}
+            </span>
           </button>
         </div>
+      </div>
+
+      {/* Navigation Ribbon Tabs */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80 overflow-x-auto">
+        <nav className="flex space-x-6 min-w-max">
+          <button
+            onClick={() => setActiveTab('portfolio')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'portfolio'
+                ? 'border-cyan-400 text-cyan-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <Award className="w-4 h-4" />
+            <span>Top 100 Frontier Innovations</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('handheld')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'handheld'
+                ? 'border-teal-400 text-teal-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <Wrench className="w-4 h-4 text-teal-400" />
+            <span>Top 100 Handheld Instruments (Low-Capital)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('quickwins')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'quickwins'
+                ? 'border-amber-400 text-amber-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <Zap className="w-4 h-4 text-amber-400" />
+            <span>Top 100 Quick-Win Accessories</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('procedures')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'procedures'
+                ? 'border-cyan-400 text-cyan-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Top-Down Procedure Matrix</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('bottlenecks')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'bottlenecks'
+                ? 'border-cyan-400 text-cyan-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <GitFork className="w-4 h-4" />
+            <span>Cross-Section Bottlenecks</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('patent_studio')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'patent_studio'
+                ? 'border-cyan-400 text-cyan-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <Scale className="w-4 h-4" />
+            <span>Patent Studio</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('export')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'export'
+                ? 'border-cyan-400 text-cyan-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Invention Dossier & Export</span>
+          </button>
+        </nav>
       </div>
     </header>
   );
