@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Upload, Search, Send, CheckCircle2, AlertOctagon, Clock, ShieldCheck, FileText, Sparkles, Filter, RefreshCw, Mail, ArrowRight, UserCheck } from 'lucide-react';
+import { Calendar, Upload, Search, Send, CheckCircle2, AlertOctagon, Clock, ShieldCheck, FileText, Sparkles, Filter, RefreshCw, Mail, ArrowRight, UserCheck, History, AlertCircle } from 'lucide-react';
 import { ProtectionRule, Scheduler, SurgeonProfile, NotificationRecord, CalendarEvent } from '../types/vigilor';
 import { parseIcsCalendar } from '../engine/icsParser';
 import { scanCalendarForConflicts, dispatchConflictNotice, generateSamplePreExistingCalendar, PreExistingConflictItem } from '../engine/historicalScanner';
@@ -27,7 +27,7 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
   const [isDispatchingAll, setIsDispatchingAll] = useState<boolean>(false);
   const [dispatchProgress, setDispatchProgress] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [filterMode, setFilterMode] = useState<'ALL' | 'PENDING' | 'DISPATCHED'>('ALL');
+  const [filterMode, setFilterMode] = useState<'UPCOMING' | 'ALL' | 'PAST' | 'DISPATCHED'>('UPCOMING');
 
   // Handle .ics file upload
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,8 +61,10 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
     }, 600);
   };
 
-  // Dispatch individual conflict notice
+  // Dispatch individual conflict notice (strictly blocked if past)
   const handleDispatchSingle = async (item: PreExistingConflictItem) => {
+    if (item.isPast) return;
+
     const records = await dispatchConflictNotice(item, profile);
     records.forEach(r => onRecordNotification(r));
 
@@ -78,17 +80,17 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
     }));
   };
 
-  // Dispatch all pending conflicts in batch
+  // Dispatch all pending UPCOMING conflicts in batch (Past events strictly excluded)
   const handleDispatchAll = async () => {
-    const pending = conflictList.filter(c => c.status === 'PENDING_DISPATCH');
-    if (pending.length === 0) return;
+    const pendingUpcoming = conflictList.filter(c => !c.isPast && c.status === 'PENDING_DISPATCH');
+    if (pendingUpcoming.length === 0) return;
 
     setIsDispatchingAll(true);
-    setDispatchProgress(`Preparing batch dispatch for ${pending.length} pre-existing appointments...`);
+    setDispatchProgress(`Preparing batch dispatch for ${pendingUpcoming.length} upcoming appointments (past events excluded)...`);
 
     let sentCount = 0;
-    for (const item of pending) {
-      setDispatchProgress(`Dispatching notice for ${item.eventDateFormatted} (${sentCount + 1}/${pending.length})...`);
+    for (const item of pendingUpcoming) {
+      setDispatchProgress(`Dispatching notice for ${item.eventDateFormatted} (${sentCount + 1}/${pendingUpcoming.length})...`);
       const records = await dispatchConflictNotice(item, profile);
       records.forEach(r => onRecordNotification(r));
       sentCount++;
@@ -96,25 +98,32 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
       await new Promise(res => setTimeout(res, 400));
     }
 
-    setConflictList(prev => prev.map(c => ({
-      ...c,
-      status: 'DISPATCHED',
-      dispatchedAt: new Date().toISOString()
-    })));
+    setConflictList(prev => prev.map(c => {
+      if (!c.isPast && c.status === 'PENDING_DISPATCH') {
+        return {
+          ...c,
+          status: 'DISPATCHED',
+          dispatchedAt: new Date().toISOString()
+        };
+      }
+      return c;
+    }));
 
     setIsDispatchingAll(false);
-    setDispatchProgress(`🎉 Batch dispatch complete! Dispatched official OR blackout notices for all ${pending.length} appointments to Emily & Richona.`);
+    setDispatchProgress(`🎉 Batch dispatch complete! Dispatched official OR blackout notices for all ${pendingUpcoming.length} upcoming appointments to Emily & Richona.`);
     setTimeout(() => setDispatchProgress(null), 6000);
   };
 
   const filtered = conflictList.filter(item => {
-    if (filterMode === 'PENDING') return item.status === 'PENDING_DISPATCH';
+    if (filterMode === 'UPCOMING') return !item.isPast;
+    if (filterMode === 'PAST') return item.isPast;
     if (filterMode === 'DISPATCHED') return item.status === 'DISPATCHED';
     return true;
   });
 
-  const pendingCount = conflictList.filter(c => c.status === 'PENDING_DISPATCH').length;
-  const dispatchedCount = conflictList.filter(c => c.status === 'DISPATCHED').length;
+  const upcomingPendingCount = conflictList.filter(c => !c.isPast && c.status === 'PENDING_DISPATCH').length;
+  const upcomingDispatchedCount = conflictList.filter(c => !c.isPast && c.status === 'DISPATCHED').length;
+  const pastCount = conflictList.filter(c => c.isPast).length;
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -130,18 +139,18 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
               Pre-Existing Appointment Audit
             </h1>
             <p className="text-slate-400 text-sm max-w-2xl">
-              Identifies all Wednesday afternoon appointments created in your Apple Calendar prior to app deployment, masks private titles, and sends official blackout notices to MultiCare surgery schedulers.
+              Identifies Wednesday afternoon appointments created in Apple Calendar prior to app deployment. <strong className="text-emerald-300 font-semibold">Strict Rule:</strong> Past appointments are kept for audit history only; alerts are dispatched exclusively for upcoming future dates.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={handleDispatchAll}
-              disabled={isDispatchingAll || pendingCount === 0}
+              disabled={isDispatchingAll || upcomingPendingCount === 0}
               className="flex items-center space-x-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-500/25 disabled:opacity-40"
             >
               <Send className={`w-4 h-4 ${isDispatchingAll ? 'animate-bounce' : ''}`} />
-              <span>{isDispatchingAll ? 'Dispatching Batch...' : `Dispatch All (${pendingCount} Pending)`}</span>
+              <span>{isDispatchingAll ? 'Dispatching Batch...' : `Dispatch Upcoming (${upcomingPendingCount} Pending)`}</span>
             </button>
           </div>
         </div>
@@ -202,11 +211,22 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
               </button>
             </div>
 
+            {/* Safety Filter Policy Box */}
+            <div className="bg-slate-950 rounded-xl p-4 border border-slate-850 space-y-2 text-xs">
+              <div className="font-bold text-sky-300 flex items-center space-x-1.5">
+                <ShieldCheck className="w-4 h-4 text-sky-400" />
+                <span>Past Date Suppression Policy</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                VigilOR automatically enforces that appointments prior to today are marked as completed history. No emails will ever be dispatched to MultiCare coordinators for past events.
+              </p>
+            </div>
+
             {/* Target Schedulers Callout */}
             <div className="bg-slate-950 rounded-xl p-4 border border-slate-850 space-y-2 text-xs">
               <div className="font-bold text-white flex items-center space-x-1.5">
                 <UserCheck className="w-4 h-4 text-emerald-400" />
-                <span>Configured Recipients for Blackout Notices:</span>
+                <span>Recipients for Upcoming Alerts:</span>
               </div>
               <ul className="space-y-1 text-[11px] text-slate-300">
                 {schedulers.map(s => (
@@ -226,38 +246,46 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
             <div>
               <h2 className="text-lg font-bold text-white flex items-center space-x-2">
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                <span>Identified Wednesday Blocked Windows ({filtered.length})</span>
+                <span>Wednesday Blocked Windows ({filtered.length})</span>
               </h2>
               <p className="text-xs text-slate-400">
-                {pendingCount} pending notice dispatch • {dispatchedCount} dispatched
+                {upcomingPendingCount} upcoming pending • {upcomingDispatchedCount} upcoming sent • {pastCount} past (suppressed)
               </p>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex items-center space-x-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
+            <div className="flex items-center space-x-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold overflow-x-auto no-scrollbar">
               <button
-                onClick={() => setFilterMode('ALL')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  filterMode === 'ALL' ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white'
+                onClick={() => setFilterMode('UPCOMING')}
+                className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
+                  filterMode === 'UPCOMING' ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                All ({conflictList.length})
+                Upcoming ({upcomingPendingCount + upcomingDispatchedCount})
               </button>
               <button
-                onClick={() => setFilterMode('PENDING')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  filterMode === 'PENDING' ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white'
+                onClick={() => setFilterMode('PAST')}
+                className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
+                  filterMode === 'PAST' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Pending ({pendingCount})
+                Past ({pastCount})
               </button>
               <button
                 onClick={() => setFilterMode('DISPATCHED')}
-                className={`px-3 py-1 rounded-lg transition-all ${
+                className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
                   filterMode === 'DISPATCHED' ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Dispatched ({dispatchedCount})
+                Dispatched ({upcomingDispatchedCount})
+              </button>
+              <button
+                onClick={() => setFilterMode('ALL')}
+                className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
+                  filterMode === 'ALL' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                All ({conflictList.length})
               </button>
             </div>
           </div>
@@ -275,17 +303,30 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
                 return (
                   <div
                     key={item.id}
-                    className="bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-800 hover:border-slate-700 transition-all space-y-3 shadow-md"
+                    className={`rounded-2xl p-4 sm:p-5 border transition-all space-y-3 shadow-md ${
+                      item.isPast
+                        ? 'bg-slate-900/50 border-slate-850 opacity-75'
+                        : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                    }`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div>
                         <div className="flex items-center space-x-2">
-                          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                            item.isPast
+                              ? 'bg-slate-800 text-slate-400 border-slate-700'
+                              : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                          }`}>
                             📅 {item.eventDateFormatted}
                           </span>
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
                             {item.timeWindowFormatted}
                           </span>
+                          {item.isPast && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                              Historical (Past)
+                            </span>
+                          )}
                         </div>
                         <div className="text-white font-bold text-sm mt-1.5">
                           {item.sanitizedSummary}
@@ -297,7 +338,11 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
 
                       {/* Action / Status Button */}
                       <div className="self-start sm:self-center">
-                        {isDispatched ? (
+                        {item.isPast ? (
+                          <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                            <span>Past (No Alert Sent)</span>
+                          </span>
+                        ) : isDispatched ? (
                           <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             <span>Dispatched</span>
@@ -315,8 +360,8 @@ export const CalendarAuditView: React.FC<CalendarAuditViewProps> = ({
                     </div>
 
                     <div className="pt-2 border-t border-slate-850 flex items-center justify-between text-[11px] text-slate-400">
-                      <span>Target Inboxes: {item.targetSchedulers.map(s => s.fullName.split(' ')[0]).join(' & ')}</span>
-                      <span>{item.ruleName}</span>
+                      <span>Target: {item.targetSchedulers.map(s => s.fullName.split(' ')[0]).join(' & ')}</span>
+                      <span>{item.isPast ? 'Audit History Only' : item.ruleName}</span>
                     </div>
                   </div>
                 );

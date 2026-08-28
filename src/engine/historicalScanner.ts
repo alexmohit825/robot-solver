@@ -12,14 +12,16 @@ export interface PreExistingConflictItem {
   timeWindowFormatted: string;
   targetSchedulers: Scheduler[];
   isPreExisting: boolean;
-  status: 'PENDING_DISPATCH' | 'DISPATCHED' | 'FAILED';
+  isPast: boolean;
+  status: 'PENDING_DISPATCH' | 'DISPATCHED' | 'PAST_EXPIRED' | 'FAILED';
   dispatchedAt?: string;
 }
 
 const VERIFIED_FORM_TOKEN = '0613e0d5ba48c05c2834b24e4ba63654';
 
 /**
- * Scans a list of calendar events and identifies all conflicting Wednesday appointments
+ * Scans a list of calendar events and identifies all conflicting Wednesday appointments.
+ * Strictly flags whether an event is in the past vs future.
  */
 export function scanCalendarForConflicts(
   events: CalendarEvent[],
@@ -30,6 +32,7 @@ export function scanCalendarForConflicts(
   const activeRules = rules.filter(r => r.isActive);
   if (activeRules.length === 0) return [];
 
+  const now = new Date();
   const results: PreExistingConflictItem[] = [];
 
   for (const event of events) {
@@ -38,6 +41,8 @@ export function scanCalendarForConflicts(
       if (evaluation.isMatch) {
         const start = new Date(event.start);
         const end = new Date(event.end);
+
+        const isPast = end.getTime() < now.getTime();
 
         const dateOptions: Intl.DateTimeFormatOptions = {
           weekday: 'long',
@@ -61,7 +66,8 @@ export function scanCalendarForConflicts(
           timeWindowFormatted,
           targetSchedulers: evaluation.targetSchedulers,
           isPreExisting: true,
-          status: 'PENDING_DISPATCH'
+          isPast,
+          status: isPast ? 'PAST_EXPIRED' : 'PENDING_DISPATCH'
         });
         break; // Match first active rule per event
       }
@@ -73,16 +79,24 @@ export function scanCalendarForConflicts(
 }
 
 /**
- * Dispatches an official OR Blackout notice for a single pre-existing conflict
+ * Dispatches an official OR Blackout notice for a single pre-existing conflict.
+ * MANDATORY GUARD: Rejects any past events from dispatching notices.
  */
 export async function dispatchConflictNotice(
   item: PreExistingConflictItem,
   profile: SurgeonProfile
 ): Promise<NotificationRecord[]> {
-  const records: NotificationRecord[] = [];
-  const start = new Date(item.event.start);
+  const now = new Date();
   const end = new Date(item.event.end);
 
+  // STRICT SAFETY GUARD: Do NOT send notices for events in the past
+  if (item.isPast || end.getTime() < now.getTime()) {
+    console.warn(`[SAFETY FILTER] Blocked dispatch for historical/past event on ${item.eventDateFormatted}.`);
+    return [];
+  }
+
+  const records: NotificationRecord[] = [];
+  const start = new Date(item.event.start);
   const fullWindowStr = `${item.eventDateFormatted} (${item.timeWindowFormatted})`;
 
   for (const scheduler of item.targetSchedulers) {
@@ -117,7 +131,7 @@ export async function dispatchConflictNotice(
           recipient_name: scheduler.fullName,
           protected_window: fullWindowStr,
           block_type: item.sanitizedSummary,
-          action_required: 'Please hold OR schedule clear. Do NOT book surgical cases during this pre-existing protected window.',
+          action_required: 'Please hold OR schedule clear. Do NOT book surgical cases during this upcoming protected window.',
           details: emailPayload.text,
           _captcha: 'false'
         })
@@ -154,7 +168,7 @@ export async function dispatchConflictNotice(
 
 /**
  * Generates sample pre-existing appointments representing real Wednesday afternoon blocks
- * entered into Apple Calendar prior to app deployment.
+ * entered into Apple Calendar prior to app deployment (includes both past and future dates).
  */
 export function generateSamplePreExistingCalendar(): CalendarEvent[] {
   const now = new Date();
@@ -162,7 +176,7 @@ export function generateSamplePreExistingCalendar(): CalendarEvent[] {
 
   // Find Wednesdays over past 4 weeks and next 8 weeks
   const baseDate = new Date(now);
-  baseDate.setDate(now.getDate() - 28); // 4 weeks ago
+  baseDate.setDate(now.getDate() - 28); // 4 weeks in the past
 
   const sampleTitles = [
     'Academic Research & Spine Literature Review',
