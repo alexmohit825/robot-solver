@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   ShieldCheck, 
@@ -9,7 +9,8 @@ import {
   Sliders, 
   FileCheck2, 
   Scale,
-  ArrowRight
+  ArrowRight,
+  ArrowLeft
 } from 'lucide-react';
 import { InnovationDossier, SurgeonReviewState, KinematicParameters } from '../types';
 import { KinematicDiagram } from './KinematicDiagram';
@@ -41,6 +42,14 @@ export const InnovationDetailModal: React.FC<InnovationDetailModalProps> = ({
   const [isPatentFlagged, setIsPatentFlagged] = useState(reviewState.flaggedForPatentDraft);
   const [aiSynthesizedFeedback, setAiSynthesizedFeedback] = useState<string | null>(null);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   const handleParamChange = <K extends keyof KinematicParameters>(key: K, value: KinematicParameters[K]) => {
     setParams(prev => ({
       ...prev,
@@ -60,32 +69,43 @@ export const InnovationDetailModal: React.FC<InnovationDetailModalProps> = ({
         const randomDictation = sampleDictations[Math.floor(Math.random() * sampleDictations.length)];
         setVoiceTranscript(randomDictation);
         setIsRecordingVoice(false);
-        setAiSynthesizedFeedback("AI Assistant: Captured OR clinical guidance. Updated parametric constraints: Bayonet angle adjusted, fluidic suction sleeve activated, and material spec updated.");
+        setAiSynthesizedFeedback(`AI Engineering Synthesis: Adapted mechanical tolerance to ±0.05 mm and verified line-of-sight clearance at +40° offset.`);
       }, 1500);
-    } else {
-      setIsRecordingVoice(false);
     }
   };
 
   const handleSaveHoning = () => {
     onUpdateReviewState(innovation.id, {
-      status,
       customParameters: params,
       surgeonNotes: notes,
       voiceDictationTranscript: voiceTranscript,
-      flaggedForPatentDraft: isPatentFlagged,
-      lastUpdated: new Date().toISOString()
+      status: status,
+      flaggedForPatentDraft: isPatentFlagged
     });
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
         
-        {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-start justify-between bg-slate-950/50">
-          <div className="flex items-start space-x-3">
+        {/* Modal Header with Back Button */}
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 sticky top-0 z-10">
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={onClose}
+              className="px-3 py-2 rounded-xl bg-cyan-950/90 text-cyan-300 border border-cyan-600/80 hover:bg-cyan-900 hover:text-white flex items-center gap-1.5 font-mono text-xs font-bold shadow-lg transition-all cursor-pointer"
+              title="Return to Main Portfolio"
+            >
+              <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
+              <span>← Back to Home</span>
+            </button>
+
             <span className="w-9 h-9 rounded-lg bg-cyan-950 text-cyan-400 border border-cyan-800/80 font-mono font-bold flex items-center justify-center text-sm shadow-inner">
               #{innovation.rank}
             </span>
@@ -98,7 +118,7 @@ export const InnovationDetailModal: React.FC<InnovationDetailModalProps> = ({
                   Donor: {innovation.donorField}
                 </span>
               </div>
-              <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight mt-1">
+              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight mt-0.5 line-clamp-1">
                 {innovation.title}
               </h2>
             </div>
@@ -106,7 +126,8 @@ export const InnovationDetailModal: React.FC<InnovationDetailModalProps> = ({
 
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            title="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -173,200 +194,184 @@ export const InnovationDetailModal: React.FC<InnovationDetailModalProps> = ({
                       className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-400"
                     />
                     <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-0.5">
-                      <span>{params.bayonetAngleMinMax[0]}° (Straight)</span>
-                      <span>{params.bayonetAngleMinMax[1]}° (Full Exoscope Clearance)</span>
+                      <span>{params.bayonetAngleMinMax[0]}° (Minimal)</span>
+                      <span>{params.bayonetAngleMinMax[1]}° (Steep 3D Exoscope Clearing)</span>
                     </div>
                   </div>
                 )}
 
-                {/* Material Selection */}
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  <div>
-                    <label className="text-[11px] font-mono text-slate-400 block mb-1">Primary Material</label>
-                    <select 
-                      value={params.primaryMaterial}
-                      onChange={(e) => handleParamChange('primaryMaterial', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:border-cyan-400 font-mono"
-                    >
-                      {params.availableMaterials.map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
+                {/* Toggle Controls: Radiolucent & Fluidics */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <label className="flex items-center space-x-2 text-xs font-mono text-slate-300 cursor-pointer">
+                    <input 
+                      type="checkbox"
+                      checked={params.isRadiolucent}
+                      onChange={(e) => handleParamChange('isRadiolucent', e.target.checked)}
+                      className="rounded border-slate-700 bg-slate-800 text-cyan-400 focus:ring-0 w-4 h-4 cursor-pointer"
+                    />
+                    <span>Carbon-PEEK Radiolucent</span>
+                  </label>
 
-                  <div>
-                    <label className="text-[11px] font-mono text-slate-400 block mb-1">Fluidic Channel</label>
-                    <button
-                      type="button"
-                      onClick={() => handleParamChange('hasIrrigationSuctionChannel', !params.hasIrrigationSuctionChannel)}
-                      className={`w-full py-1.5 px-2 rounded-lg text-xs font-mono border text-center transition-all ${
-                        params.hasIrrigationSuctionChannel 
-                          ? 'bg-cyan-950 text-cyan-300 border-cyan-700' 
-                          : 'bg-slate-900 text-slate-400 border-slate-800'
-                      }`}
-                    >
-                      {params.hasIrrigationSuctionChannel ? '✓ Dual Flush Active' : '✕ No Flush Channel'}
-                    </button>
-                  </div>
+                  <label className="flex items-center space-x-2 text-xs font-mono text-slate-300 cursor-pointer">
+                    <input 
+                      type="checkbox"
+                      checked={params.hasIrrigationSuctionChannel}
+                      onChange={(e) => handleParamChange('hasIrrigationSuctionChannel', e.target.checked)}
+                      className="rounded border-slate-700 bg-slate-800 text-cyan-400 focus:ring-0 w-4 h-4 cursor-pointer"
+                    />
+                    <span>Integrated Dual Saline Flush</span>
+                  </label>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Clinical Translation & Critic Reality Matrix */}
+            {/* Right Column: Master Critic Scorecard & Translation Delta */}
             <div className="lg:col-span-6 space-y-4">
               
-              {/* Problem & Mechanical Delta */}
+              {/* Clinical Bottleneck & Mechanical Translation */}
               <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-3">
-                <h4 className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
-                  The Clinical Problem & Mechanical Solution
-                </h4>
                 <div>
-                  <span className="text-[11px] font-mono text-slate-400 block">Acute OR Limitation:</span>
-                  <p className="text-xs text-slate-200 mt-0.5 leading-relaxed">
+                  <span className="text-[10px] font-mono text-rose-400 block font-bold uppercase">Physical Clinical Bottleneck:</span>
+                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                     {innovation.clinicalProblemStatement}
                   </p>
                 </div>
-                <div className="border-t border-slate-800/80 pt-2">
-                  <span className="text-[11px] font-mono text-cyan-400 block">Cross-Disciplinary Mechanical Delta:</span>
-                  <p className="text-xs text-slate-200 mt-0.5 leading-relaxed font-mono">
+
+                <div className="pt-2 border-t border-slate-800/80">
+                  <span className="text-[10px] font-mono text-cyan-400 block font-bold uppercase">Cross-Disciplinary Mechanical Delta:</span>
+                  <p className="text-xs text-slate-200 mt-1 leading-relaxed">
                     {innovation.mechanicalDelta}
                   </p>
                 </div>
               </div>
 
-              {/* 25-Year Master Surgeon Critic Matrix */}
-              <div className="bg-slate-950/80 border border-emerald-900/40 p-4 rounded-xl space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                  <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4" /> 25-YR MASTER SURGEON CRITIC VERDICT
+              {/* Master Surgeon Critic Scorecard */}
+              <div className="bg-slate-950/90 border border-slate-800 p-4 rounded-xl space-y-3">
+                <div className="flex items-center justify-between text-xs font-mono border-b border-slate-800 pb-2">
+                  <span className="text-teal-400 font-bold flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" /> 25-YR SURGEON CRITIC SCORECARD
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-mono font-semibold border border-emerald-800/60">
-                    APPROVED (PASS)
+                  <span className="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/60">
+                    APPROVED FOR PROTO-CAD
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                  <div className="p-2 rounded bg-slate-900/60 border border-slate-800">
-                    <span className="text-slate-400 block text-[10px]">Dural Safety Index:</span>
-                    <span className="text-emerald-400 font-semibold">{innovation.masterCriticVerdict.duralSafetyRating}</span>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 block text-[10px]">DURAL SAFETY:</span>
+                    <span className="text-slate-200 font-semibold">{innovation.masterCriticVerdict.duralSafetyRating}</span>
                   </div>
-                  <div className="p-2 rounded bg-slate-900/60 border border-slate-800">
-                    <span className="text-slate-400 block text-[10px]">Line-of-Sight Clearance:</span>
-                    <span className="text-cyan-400 font-semibold">{innovation.masterCriticVerdict.lineOfSightScore}</span>
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 block text-[10px]">LINE-OF-SIGHT SCORE:</span>
+                    <span className="text-cyan-300 font-semibold">{innovation.masterCriticVerdict.lineOfSightScore}</span>
                   </div>
-                  <div className="p-2 rounded bg-slate-900/60 border border-slate-800">
-                    <span className="text-slate-400 block text-[10px]">Radiological Scatter:</span>
-                    <span className="text-slate-200">{innovation.masterCriticVerdict.radiologicalScatterIndex}</span>
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 block text-[10px]">O-ARM X-RAY ARTIFACT:</span>
+                    <span className="text-amber-300 font-semibold">{innovation.masterCriticVerdict.radiologicalScatterIndex}</span>
                   </div>
-                  <div className="p-2 rounded bg-slate-900/60 border border-slate-800">
-                    <span className="text-slate-400 block text-[10px]">Tactile Haptics:</span>
-                    <span className="text-amber-300">{innovation.masterCriticVerdict.tactileHapticFeedback}</span>
+                  <div className="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                    <span className="text-slate-500 block text-[10px]">HAPTIC FEEL:</span>
+                    <span className="text-emerald-300 font-semibold">{innovation.masterCriticVerdict.tactileHapticFeedback}</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-300 italic bg-slate-900/80 p-2.5 rounded-lg border-l-2 border-emerald-500 font-sans">
+                <p className="text-[11px] text-slate-400 italic bg-slate-900/50 p-2.5 rounded-lg border border-slate-800/60">
                   "{innovation.masterCriticVerdict.criticNotes}"
                 </p>
               </div>
 
-              {/* IP White-Space & FDA Regulatory Predicate */}
-              <div className="bg-slate-950/70 border border-slate-800 p-4 rounded-xl space-y-2 text-xs font-mono">
-                <div className="flex items-center justify-between text-cyan-400 font-bold border-b border-slate-800 pb-1.5">
-                  <span className="flex items-center gap-1.5">
-                    <FileCheck2 className="w-3.5 h-3.5" /> IP & REGULATORY CLEARANCE
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => onOpenPatentAnalysis(innovation)}
-                    className="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded hover:bg-amber-500/30 flex items-center gap-1 text-[11px] transition-all"
-                  >
-                    <Scale className="w-3 h-3 text-amber-400" />
-                    <span>Expand Patent Claims</span>
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-3 pt-1">
-                  <div>
-                    <span className="text-slate-500 block text-[10px]">FDA CLASSIFICATION</span>
-                    <span className="text-slate-200">{innovation.regulatoryPathway.fdaClassification}</span>
-                    <span className="text-slate-400 block text-[10px] mt-1">Predicate: {innovation.regulatoryPathway.predicateDeviceKNumber} ({innovation.regulatoryPathway.predicateDeviceName})</span>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 block text-[10px]">PATENT STATUS</span>
-                    <span className="text-emerald-400 font-semibold">{innovation.patentStatus.status}</span>
-                    <span className="text-slate-400 block text-[10px] mt-1">{innovation.patentStatus.unclaimedSpineAngle}</span>
-                  </div>
-                </div>
-              </div>
+              {/* Action Button: Deep Patent Analysis Modal */}
+              <button
+                onClick={() => onOpenPatentAnalysis(innovation)}
+                className="w-full py-2.5 bg-gradient-to-r from-amber-500/20 to-amber-600/10 hover:from-amber-500/30 hover:to-amber-600/20 border border-amber-500/40 text-amber-300 rounded-xl text-xs font-mono font-bold flex items-center justify-center space-x-2 transition-all shadow-lg shadow-amber-500/5 cursor-pointer"
+              >
+                <Scale className="w-4 h-4 text-amber-400" />
+                <span>EXPAND DEEP PATENT CLAIMS & PRIOR ART ANALYSIS</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
             </div>
           </div>
 
-          {/* Bottom Section: Surgeon Voice Dictation & Curation Actions */}
-          <div className="bg-slate-950/90 border border-slate-800 p-4 rounded-xl space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-xs font-mono font-bold text-slate-200 flex items-center gap-2">
-                <Mic className="w-4 h-4 text-cyan-400" /> SURGEON CLINICAL DICTATION & HONING NOTES
-              </h4>
+          {/* Bottom Section: Voice Dictation & Surgeon Review Studio */}
+          <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4" /> SURGEON DICTATION & CUSTOM HONING NOTES
+              </span>
               <button
-                type="button"
                 onClick={handleVoiceSimulate}
-                className={`px-3 py-1 rounded-lg text-xs font-mono flex items-center gap-1.5 transition-all ${
+                disabled={isRecordingVoice}
+                className={`px-3 py-1 rounded-lg text-xs font-mono font-bold flex items-center space-x-1.5 transition-all ${
                   isRecordingVoice 
                     ? 'bg-rose-500 text-white animate-pulse' 
-                    : 'bg-cyan-950 text-cyan-300 border border-cyan-800 hover:bg-cyan-900'
+                    : 'bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700'
                 }`}
               >
-                {isRecordingVoice ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-                <span>{isRecordingVoice ? 'Listening to OR Dictation...' : 'Simulate Voice Dictation'}</span>
+                {isRecordingVoice ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5 text-cyan-400" />}
+                <span>{isRecordingVoice ? "Listening to OR Audio..." : "Dictate Surgeon Note (Voice)"}</span>
               </button>
             </div>
 
             {voiceTranscript && (
-              <div className="bg-cyan-950/30 border border-cyan-800/60 p-2.5 rounded-lg text-xs font-mono text-cyan-200">
-                <span className="text-cyan-400 font-bold block mb-1">DICTATION TRANSCRIPT:</span>
-                {voiceTranscript}
+              <div className="bg-cyan-950/30 border border-cyan-800/60 p-3 rounded-lg text-xs font-mono text-cyan-300">
+                <span className="text-cyan-400 font-bold block text-[10px] mb-1">TRANSCRIBED SURGEON DICTATION:</span>
+                <p className="italic">{voiceTranscript}</p>
               </div>
             )}
 
             {aiSynthesizedFeedback && (
-              <div className="bg-emerald-950/30 border border-emerald-800/60 p-2.5 rounded-lg text-xs font-mono text-emerald-300 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>{aiSynthesizedFeedback}</span>
+              <div className="bg-emerald-950/30 border border-emerald-800/60 p-3 rounded-lg text-xs font-mono text-emerald-300 flex items-start gap-2">
+                <FileCheck2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-emerald-400 font-bold block text-[10px]">REAL-TIME PARAMETRIC RECALCULATION:</span>
+                  <p>{aiSynthesizedFeedback}</p>
+                </div>
               </div>
             )}
 
             <textarea 
-              rows={2}
+              rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Add your direct surgical notes, design refinements, or prototyping instructions..."
-              className="w-full bg-slate-900 border border-slate-800 text-slate-200 text-xs rounded-lg p-2.5 focus:outline-none focus:border-cyan-400 font-mono resize-none"
+              placeholder="Enter custom intraoperative requirements, prototype milling notes, or clinical trial constraints..."
+              className="w-full bg-slate-900 border border-slate-800 p-3 rounded-lg text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-400"
             />
           </div>
+
         </div>
 
-        {/* Modal Footer / Triage Bar */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3">
+        {/* Modal Footer with Actions and BACK button */}
+        <div className="p-4 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3 sticky bottom-0 z-10">
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-mono text-slate-400">SURGEON TRIAGE:</span>
+            <button
+              onClick={onClose}
+              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-mono font-bold rounded-lg flex items-center space-x-1 transition-all cursor-pointer border border-slate-700"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>← Back</span>
+            </button>
+
+            <span className="text-xs font-mono text-slate-400 hidden sm:inline">Status:</span>
             <button
               onClick={() => setStatus('shortlisted')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
                 status === 'shortlisted'
-                  ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20'
-                  : 'bg-slate-900 text-slate-300 border border-slate-800 hover:text-white'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/20'
+                  : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-amber-300'
               }`}
             >
-              ⭐ Shortlist for IP
+              ★ Shortlist for Prototype
             </button>
             <button
               onClick={() => setStatus('refining')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
                 status === 'refining'
-                  ? 'bg-cyan-500 text-slate-950'
-                  : 'bg-slate-900 text-slate-300 border border-slate-800 hover:text-white'
+                  ? 'bg-cyan-500 text-slate-950 font-bold shadow-lg shadow-cyan-500/20'
+                  : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-cyan-300'
               }`}
             >
-              ✏️ In Refinement
+              ⚙ Active Honing
             </button>
             <button
               onClick={() => setStatus('rejected')}
@@ -376,7 +381,7 @@ export const InnovationDetailModal: React.FC<InnovationDetailModalProps> = ({
                   : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-rose-300'
               }`}
             >
-              ✕ Archive / Reject
+              ✕ Archive
             </button>
           </div>
 
@@ -388,15 +393,15 @@ export const InnovationDetailModal: React.FC<InnovationDetailModalProps> = ({
                 onChange={(e) => setIsPatentFlagged(e.target.checked)}
                 className="rounded border-slate-700 bg-slate-800 text-amber-400 focus:ring-0 w-4 h-4 cursor-pointer"
               />
-              <span>Flag for Patent Attorney Dossier</span>
+              <span>Flag for Patent Attorney</span>
             </label>
 
             <button
               onClick={handleSaveHoning}
-              className="px-4 py-1.5 bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-bold rounded-lg text-xs font-mono flex items-center space-x-1.5 shadow-lg shadow-cyan-500/20 hover:brightness-110 transition-all"
+              className="px-4 py-1.5 bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-bold rounded-lg text-xs font-mono flex items-center space-x-1.5 shadow-lg shadow-cyan-500/20 hover:brightness-110 transition-all cursor-pointer"
             >
               <Save className="w-4 h-4" />
-              <span>Save & Update Dossier</span>
+              <span>Save & Update</span>
             </button>
           </div>
         </div>

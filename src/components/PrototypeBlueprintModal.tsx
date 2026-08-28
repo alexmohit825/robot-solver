@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Download, 
@@ -7,6 +7,7 @@ import {
   Layers, 
   CheckCircle2, 
   Copy,
+  ArrowLeft,
   Eye,
   Maximize2
 } from 'lucide-react';
@@ -31,6 +32,15 @@ export const PrototypeBlueprintModal: React.FC<PrototypeBlueprintModalProps> = (
 }) => {
   const [copiedSpec, setCopiedSpec] = useState(false);
   const [activeViewTab, setActiveViewTab] = useState<'elevation' | 'plan' | 'section' | 'isometric'>('elevation');
+
+  // Handle Escape key to return to home
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const shaftLength = parameters?.shaftLengthMm || 135;
   const bayonetAngle = parameters?.bayonetAngleDeg || 35;
@@ -87,29 +97,23 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
             <text x="0" y="-10" fill="#38bdf8" fontSize="9" fontFamily="monospace" fontWeight="bold">
               VIEW A-A: DYNAMIC PRESSURE-RELIEF EXPANDABLE RETRACTOR CORRIDOR
             </text>
-            {/* Retractor Mounting Arm & Articulation Clamp */}
             <rect x="0" y="90" width="50" height="30" rx="4" fill="#091829" stroke="#00f2fe" strokeWidth="2"/>
             <circle cx="25" cy="105" r="7" fill="#f59e0b" stroke="#00f2fe" strokeWidth="1.5"/>
             <text x="25" y="135" textAnchor="middle" fill="#38bdf8" fontSize="7" fontFamily="monospace">BED CLAMP</text>
-            {/* Gear Rack & Expansion Drive Screw */}
             <line x1="50" y1="105" x2="160" y2="105" stroke="#00f2fe" strokeWidth="4"/>
             <line x1="60" y1="95" x2="60" y2="115" stroke="#f59e0b" strokeWidth="1.5"/>
             <line x1="80" y1="95" x2="80" y2="115" stroke="#f59e0b" strokeWidth="1.5"/>
             <line x1="100" y1="95" x2="100" y2="115" stroke="#f59e0b" strokeWidth="1.5"/>
             <line x1="120" y1="95" x2="120" y2="115" stroke="#f59e0b" strokeWidth="1.5"/>
-            {/* Left Retractor Blade with Micro-PPG Sensors */}
             <path d="M 160,105 L 180,60 L 370,50 L 390,40" fill="none" stroke="#00f2fe" strokeWidth="3"/>
             <circle cx="250" cy="56" r="4" fill="#f59e0b"/>
             <circle cx="310" cy="53" r="4" fill="#f59e0b"/>
             <circle cx="370" cy="50" r="4" fill="#10b981"/>
             <text x="310" y="38" fill="#10b981" fontSize="7" fontFamily="monospace">PPG SENSORS</text>
-            {/* Right Retractor Blade with Micro-Piezo Actuator */}
             <path d="M 160,105 L 180,150 L 370,160 L 390,170" fill="none" stroke="#00f2fe" strokeWidth="3"/>
             <rect x="230" y="145" width="30" height="12" rx="2" fill="#0e283e" stroke="#f59e0b" strokeWidth="1.5"/>
             <text x="245" y="172" textAnchor="middle" fill="#f59e0b" fontSize="7" fontFamily="monospace">PIEZO PULSE</text>
-            {/* Working Corridor Ray */}
             <line x1="180" y1="105" x2="400" y2="105" stroke="#38bdf8" strokeWidth="1" strokeDasharray="4,4" opacity="0.6"/>
-            {/* Dimension Lines */}
             <line x1="180" y1="30" x2="390" y2="30" stroke="#38bdf8" strokeWidth="0.8" markerStart="url(#arrow)" markerEnd="url(#arrow)"/>
             <text x="285" y="24" textAnchor="middle" fill="#00f2fe" fontSize="8" fontFamily="monospace">CORRIDOR DEPTH = {shaftLength}.00 mm [±0.20]</text>
             <text x="400" y="108" fill="#00f2fe" fontSize="8" fontFamily="monospace">TARGET CORRIDOR</text>
@@ -124,23 +128,17 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
             <text x="0" y="-10" fill="#38bdf8" fontSize="9" fontFamily="monospace" fontWeight="bold">
               VIEW A-A: ULTRASONIC BONE CAVITATION DISSECTOR WITH COAXIAL FLUIDIC VORTEX
             </text>
-            {/* Piezo Transducer Housing */}
             <rect x="10" y="90" width="80" height="40" rx="4" fill="#091829" stroke="#00f2fe" strokeWidth="2"/>
             <rect x="25" y="95" width="50" height="30" fill="url(#sectionHatch)" stroke="#f59e0b" strokeWidth="1"/>
             <text x="50" y="113" textAnchor="middle" fill="#f59e0b" fontSize="7" fontFamily="monospace">36 kHz PIEZO</text>
-            {/* Acoustic Nodal Flange */}
             <polygon points="90,95 110,85 110,135 90,125" fill="#0e283e" stroke="#00f2fe" strokeWidth="1.5"/>
-            {/* Bayoneted Acoustic Horn */}
             <path d="M 110,110 L 150,110 L 190,65 L 360,65" fill="none" stroke="#00f2fe" strokeWidth="3.5" strokeLinecap="round"/>
-            {/* Coaxial Fluidic Irrigation Sleeve */}
             <path d="M 110,105 L 145,105 L 185,60 L 340,60" fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="3,2"/>
             <text x="240" y="50" fill="#38bdf8" fontSize="7" fontFamily="monospace">COLD SALINE VORTEX LUMEN</text>
-            {/* Diamond-Coated Cavitation Tip */}
             <circle cx="365" cy="65" r="7" fill="#f59e0b" stroke="#ffffff" strokeWidth="1.5"/>
             <line x1="365" y1="58" x2="365" y2="72" stroke="#091829" strokeWidth="1"/>
             <line x1="358" y1="65" x2="372" y2="65" stroke="#091829" strokeWidth="1"/>
             <text x="375" y="78" fill="#f59e0b" fontSize="8" fontFamily="monospace">Ø 3.0mm DLC BURR</text>
-            {/* Dimensions */}
             <line x1="190" y1="35" x2="365" y2="35" stroke="#38bdf8" strokeWidth="0.8" markerStart="url(#arrow)" markerEnd="url(#arrow)"/>
             <text x="277" y="28" textAnchor="middle" fill="#00f2fe" fontSize="8" fontFamily="monospace">ACOUSTIC REACH = {shaftLength}.00 mm</text>
           </g>
@@ -153,23 +151,18 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
             <text x="0" y="-10" fill="#38bdf8" fontSize="9" fontFamily="monospace" fontWeight="bold">
               VIEW A-A: 6-AXIS COORDINATE-SYNCHRONIZED DYNAMIC SPINE POSITIONING TABLE
             </text>
-            {/* Base Hydraulic Telescoping Column */}
             <rect x="180" y="140" width="60" height="60" rx="4" fill="#091829" stroke="#00f2fe" strokeWidth="2"/>
             <line x1="180" y1="170" x2="240" y2="170" stroke="#f59e0b" strokeWidth="1.5"/>
             <text x="210" y="195" textAnchor="middle" fill="#38bdf8" fontSize="7" fontFamily="monospace">CNC LIFT (Z-AXIS)</text>
-            {/* Central Pelvic Cradle Gimbal Hinge */}
             <circle cx="210" cy="130" r="14" fill="#0e283e" stroke="#f59e0b" strokeWidth="2"/>
             <circle cx="210" cy="130" r="5" fill="#00f2fe"/>
             <text x="210" y="115" textAnchor="middle" fill="#f59e0b" fontSize="8" fontFamily="monospace">6-DoF GIMBAL</text>
-            {/* Thoracic Bed Segment (Lordosis Controller) */}
             <path d="M 210,130 L 70,110 L 30,115" fill="none" stroke="#00f2fe" strokeWidth="4"/>
             <rect x="40" y="95" width="120" height="15" rx="3" fill="#0e283e" stroke="#38bdf8" strokeWidth="1"/>
             <text x="100" y="90" textAnchor="middle" fill="#00f2fe" fontSize="7" fontFamily="monospace">THORACIC CRADLE</text>
-            {/* Lower Extremity Segment (Psoas Drop Linkage) */}
             <path d="M 210,130 L 350,150 L 390,165" fill="none" stroke="#00f2fe" strokeWidth="4"/>
             <rect x="250" y="140" width="120" height="15" rx="3" fill="#0e283e" stroke="#f59e0b" strokeWidth="1"/>
             <text x="310" y="170" textAnchor="middle" fill="#f59e0b" fontSize="7" fontFamily="monospace">HIP-DROP ACTUATOR (-25°)</text>
-            {/* Navigation Optical Encoders */}
             <circle cx="70" cy="110" r="5" fill="#10b981"/>
             <circle cx="350" cy="150" r="5" fill="#10b981"/>
             <text x="350" y="135" fill="#10b981" fontSize="7" fontFamily="monospace">NAV ENCODER</text>
@@ -183,20 +176,15 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
             <text x="0" y="-10" fill="#38bdf8" fontSize="9" fontFamily="monospace" fontWeight="bold">
               VIEW A-A: COAXIAL TIR 360° SHADOWLESS LIGHT-PIPE RING & WAVEGUIDE
             </text>
-            {/* Laser Diode / Fiber Coupler Ferrule */}
             <rect x="20" y="95" width="45" height="30" rx="3" fill="#091829" stroke="#f59e0b" strokeWidth="2"/>
             <circle cx="42" cy="110" r="6" fill="#f59e0b"/>
             <text x="42" y="138" textAnchor="middle" fill="#f59e0b" fontSize="7" fontFamily="monospace">FIBER COUPLER</text>
-            {/* Waveguide Transmission Core */}
             <path d="M 65,110 L 140,110 L 180,75 L 360,75" fill="none" stroke="#00f2fe" strokeWidth="5"/>
             <path d="M 65,110 L 140,110 L 180,145 L 360,145" fill="none" stroke="#00f2fe" strokeWidth="5"/>
-            {/* Internal Optical Reflection Rays */}
             <path d="M 70,110 L 100,105 L 130,115 L 160,95 L 220,75 L 260,78 L 300,75" fill="none" stroke="#ffffff" strokeWidth="1" strokeDasharray="2,2"/>
             <path d="M 70,110 L 100,115 L 130,105 L 160,125 L 220,145 L 260,142 L 300,145" fill="none" stroke="#ffffff" strokeWidth="1" strokeDasharray="2,2"/>
-            {/* 360° Circular Distal Micro-Lens Diffuser Bezel */}
             <ellipse cx="360" cy="110" rx="15" ry="38" fill="#0e283e" stroke="#00f2fe" strokeWidth="2"/>
             <ellipse cx="360" cy="110" rx="10" ry="25" fill="#091829" stroke="#f59e0b" strokeWidth="1.5"/>
-            {/* Light Cone Projection */}
             <polygon points="360,75 420,50 420,170 360,145" fill="#f59e0b" opacity="0.15" stroke="#f59e0b" strokeWidth="0.8" strokeDasharray="3,3"/>
             <text x="390" y="112" textAnchor="middle" fill="#f59e0b" fontSize="8" fontFamily="monospace">20,000 LUX COLD BEAM</text>
             <line x1="180" y1="40" x2="360" y2="40" stroke="#38bdf8" strokeWidth="0.8" markerStart="url(#arrow)" markerEnd="url(#arrow)"/>
@@ -212,21 +200,16 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
             <text x="0" y="-10" fill="#38bdf8" fontSize="9" fontFamily="monospace" fontWeight="bold">
               VIEW A-A: SINGLE-TRIGGER TITANIUM ARCUATE DURAL MICRO-CLIP APPLIER
             </text>
-            {/* Ergonomic Scissor Handpiece */}
             <path d="M 20,160 L 50,80 L 130,80" fill="none" stroke="#00f2fe" strokeWidth="2.5"/>
             <path d="M 70,165 L 60,95 L 130,72" fill="none" stroke="#f59e0b" strokeWidth="2"/>
             <circle cx="60" cy="90" r="4" fill="#00f2fe"/>
-            {/* Bayoneted Narrow Coronal Shaft */}
             <path d="M 130,80 L 160,50 L 375,50" fill="none" stroke="#00f2fe" strokeWidth="2.5"/>
-            {/* Internal Micro-Clip Cartridge Feed Channel */}
             <line x1="130,72" x2="160,45" stroke="#f59e0b" strokeWidth="1"/>
             <line x1="160,45" x2="370,45" stroke="#f59e0b" strokeWidth="1" strokeDasharray="3,2"/>
-            {/* U-Shaped Arcuate Micro-Clips in Track */}
             <path d="M 240,43 Q 244,40 248,43" fill="none" stroke="#ffffff" strokeWidth="1.5"/>
             <path d="M 260,43 Q 264,40 268,43" fill="none" stroke="#ffffff" strokeWidth="1.5"/>
             <path d="M 280,43 Q 284,40 288,43" fill="none" stroke="#ffffff" strokeWidth="1.5"/>
             <text x="264" y="32" textAnchor="middle" fill="#38bdf8" fontSize="7" fontFamily="monospace">CLIP CARTRIDGE</text>
-            {/* Miniaturized 1.2mm Eversion Jaws */}
             <polygon points="375,50 395,46 390,50" fill="#f59e0b" stroke="#00f2fe" strokeWidth="1"/>
             <polygon points="375,50 395,54 390,50" fill="#f59e0b" stroke="#00f2fe" strokeWidth="1"/>
             <circle cx="395" cy="50" r="2" fill="#ffffff"/>
@@ -343,28 +326,43 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-5xl max-h-[94vh] flex flex-col shadow-2xl overflow-hidden">
         
-        {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-start justify-between bg-slate-950/70">
-          <div className="flex items-start space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center font-mono font-bold text-sm">
+        {/* Modal Header with Prominent BACK Button */}
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-950/80 sticky top-0 z-10">
+          <div className="flex items-center space-x-3">
+            {/* Dedicated Primary BACK Button */}
+            <button
+              onClick={onClose}
+              className="px-3 py-2 rounded-xl bg-cyan-950/90 text-cyan-300 border border-cyan-600/80 hover:bg-cyan-900 hover:text-white flex items-center gap-1.5 font-mono text-xs font-bold shadow-lg shadow-cyan-500/10 transition-all cursor-pointer"
+              title="Return to Main Portfolio / Home"
+            >
+              <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
+              <span>← Back to Home</span>
+            </button>
+
+            <div className="w-9 h-9 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center font-mono font-bold text-xs">
               CAD
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 font-mono font-bold">
-                  PROTOTYPE LINE DRAWING & CAD BLUEPRINT
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 font-mono font-bold">
+                  PROTOTYPE BLUEPRINT
                 </span>
-                <span className="text-xs font-mono text-slate-400">
+                <span className="text-[10px] font-mono text-slate-400">
                   Part: {blueprint.partNumber}
                 </span>
-                <span className="text-xs px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800/80 font-mono font-bold">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800/80 font-mono font-bold">
                   {diagramType.replace('_', ' ').toUpperCase()}
                 </span>
               </div>
-              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight mt-1">
+              <h2 className="text-sm sm:text-base font-bold text-white tracking-tight mt-0.5 line-clamp-1">
                 {title}
               </h2>
             </div>
@@ -373,14 +371,15 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
           <div className="flex items-center space-x-2">
             <button
               onClick={handleCopySpec}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono flex items-center gap-1.5 transition-all"
+              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono flex items-center gap-1.5 transition-all cursor-pointer"
             >
               {copiedSpec ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedSpec ? "Copied Spec" : "Copy Spec Sheet"}</span>
+              <span>{copiedSpec ? "Copied Spec" : "Copy Spec"}</span>
             </button>
             <button 
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              title="Close Blueprint"
             >
               <X className="w-5 h-5" />
             </button>
@@ -405,7 +404,7 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
                 <span className="text-[10px] text-slate-400 px-1.5">VIEW:</span>
                 <button
                   onClick={() => setActiveViewTab('elevation')}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
                     activeViewTab === 'elevation' ? 'bg-cyan-500 text-slate-950' : 'text-slate-300 hover:text-white'
                   }`}
                 >
@@ -413,7 +412,7 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
                 </button>
                 <button
                   onClick={() => setActiveViewTab('plan')}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
                     activeViewTab === 'plan' ? 'bg-cyan-500 text-slate-950' : 'text-slate-300 hover:text-white'
                   }`}
                 >
@@ -421,7 +420,7 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
                 </button>
                 <button
                   onClick={() => setActiveViewTab('section')}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
                     activeViewTab === 'section' ? 'bg-cyan-500 text-slate-950' : 'text-slate-300 hover:text-white'
                   }`}
                 >
@@ -429,7 +428,7 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
                 </button>
                 <button
                   onClick={() => setActiveViewTab('isometric')}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all cursor-pointer ${
                     activeViewTab === 'isometric' ? 'bg-cyan-500 text-slate-950' : 'text-slate-300 hover:text-white'
                   }`}
                 >
@@ -578,23 +577,27 @@ ${blueprint.criticalFeatures.map(f => `• ${f}`).join('\n')}
 
         </div>
 
-        {/* Modal Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-mono text-slate-500">
-            Vector CAD format compatible with SolidWorks, Fusion 360, and CNC wire-EDM tooling.
-          </span>
+        {/* Modal Footer with BACK button */}
+        <div className="p-4 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3 sticky bottom-0 z-10">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-mono font-bold rounded-lg flex items-center space-x-1.5 transition-all cursor-pointer border border-slate-700"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>← Back to Home Page</span>
+          </button>
 
           <div className="flex items-center space-x-3">
             <button
               onClick={handlePrint}
-              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-semibold rounded-lg flex items-center space-x-1.5 transition-all"
+              className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-semibold rounded-lg flex items-center space-x-1.5 transition-all cursor-pointer"
             >
               <Printer className="w-4 h-4" />
               <span>Print Drawing Sheet</span>
             </button>
             <button
               onClick={handleCopySpec}
-              className="px-4 py-1.5 bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-bold rounded-lg text-xs font-mono flex items-center space-x-1.5 shadow-lg shadow-cyan-500/20 hover:brightness-110 transition-all"
+              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-bold rounded-lg text-xs font-mono flex items-center space-x-1.5 shadow-lg shadow-cyan-500/20 hover:brightness-110 transition-all cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>Export CAD Specification</span>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   FileText, 
@@ -10,7 +10,8 @@ import {
   Award,
   BookOpen,
   AlertTriangle,
-  Zap
+  Zap,
+  ArrowLeft
 } from 'lucide-react';
 import { InnovationDossier } from '../types';
 
@@ -26,6 +27,14 @@ export const PatentAnalysisDrawer: React.FC<PatentAnalysisDrawerProps> = ({
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const patent = innovation.deepPatentAnalysis;
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   const handleCopy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     setCopiedSection(label);
@@ -38,13 +47,27 @@ export const PatentAnalysisDrawer: React.FC<PatentAnalysisDrawerProps> = ({
   const isCaution = recommendation.includes('CAUTION');
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
         
-        {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-start justify-between bg-slate-950/60">
-          <div className="flex items-start space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center">
+        {/* Header with Back Button */}
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 sticky top-0 z-10">
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={onClose}
+              className="px-3 py-2 rounded-xl bg-amber-950/90 text-amber-300 border border-amber-600/80 hover:bg-amber-900 hover:text-white flex items-center gap-1.5 font-mono text-xs font-bold shadow-lg transition-all cursor-pointer"
+              title="Return to Main Portfolio"
+            >
+              <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
+              <span>← Back to Home</span>
+            </button>
+
+            <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center">
               <Scale className="w-5 h-5" />
             </div>
             <div>
@@ -56,7 +79,7 @@ export const PatentAnalysisDrawer: React.FC<PatentAnalysisDrawerProps> = ({
                   Rank #{innovation.rank}
                 </span>
               </div>
-              <h2 className="text-lg font-bold text-white tracking-tight mt-1">
+              <h2 className="text-base sm:text-lg font-bold text-white tracking-tight mt-0.5 line-clamp-1">
                 {innovation.title}
               </h2>
             </div>
@@ -64,7 +87,8 @@ export const PatentAnalysisDrawer: React.FC<PatentAnalysisDrawerProps> = ({
 
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+            title="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -136,7 +160,7 @@ export const PatentAnalysisDrawer: React.FC<PatentAnalysisDrawerProps> = ({
               </h3>
               <button
                 onClick={() => handleCopy(`${patent.draftIndependentClaim}\n\n${patent.draftDependentClaims.join('\n')}`, 'claims')}
-                className="text-xs font-mono text-slate-400 hover:text-white flex items-center gap-1"
+                className="text-xs font-mono text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 {copiedSection === 'claims' ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === 'claims' ? 'Copied' : 'Copy Claims'}</span>
@@ -212,14 +236,19 @@ export const PatentAnalysisDrawer: React.FC<PatentAnalysisDrawerProps> = ({
 
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950 flex items-center justify-between">
-          <span className="text-xs font-mono text-slate-500">
-            Automated patent landscape synthesis with 35 U.S.C. compliance checks.
-          </span>
+        {/* Footer with Back Button */}
+        <div className="p-4 border-t border-slate-800 bg-slate-950 flex items-center justify-between sticky bottom-0 z-10">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-mono rounded-lg transition-colors"
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-mono font-bold rounded-lg flex items-center space-x-1.5 transition-all cursor-pointer border border-slate-700"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>← Back to Home Page</span>
+          </button>
+
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-mono rounded-lg transition-colors cursor-pointer"
           >
             Close Patent View
           </button>
