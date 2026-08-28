@@ -1,5 +1,6 @@
 import React from 'react';
-import { QrCode, X, Smartphone, ArrowRight, Share, PlusSquare, ExternalLink } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { QrCode, X, Smartphone, Share, ExternalLink, CheckCircle } from 'lucide-react';
 
 interface QrInstallModalProps {
   isOpen: boolean;
@@ -14,9 +15,7 @@ export const QrInstallModal: React.FC<QrInstallModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  // Exact working URL pointing to VigilOR GitHub Pages
-  const exactLiveUrl = 'https://alexmohit825.github.io/vigilOR/';
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${encodeURIComponent(exactLiveUrl)}&color=0f172a&bgcolor=ffffff&qzone=2&margin=0`;
+  const exactWorkingUrl = 'https://alexmohit825.github.io/vigilOR/';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
@@ -34,46 +33,49 @@ export const QrInstallModal: React.FC<QrInstallModalProps> = ({
           <div className="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
             <QrCode className="w-7 h-7" />
           </div>
-          <h2 className="text-xl font-bold text-white tracking-tight">Scan with iPhone Camera</h2>
-          <p className="text-xs text-slate-400">Instantly open and add VigilOR to your iPhone Home Screen</p>
+          <h2 className="text-xl font-bold text-white tracking-tight">Add VigilOR to iPhone</h2>
+          <p className="text-xs text-slate-400">Scan with your iPhone Camera to open directly in Safari</p>
         </div>
 
-        {/* QR Code Container */}
-        <div className="bg-white p-5 rounded-2xl shadow-xl inline-block border-4 border-emerald-500/30">
-          <img
-            src={qrCodeUrl}
-            alt="Scan to open VigilOR on iPhone"
-            className="w-56 h-56 mx-auto rounded-lg object-contain"
+        {/* Vector SVG QR Code Container */}
+        <div className="bg-white p-5 rounded-2xl shadow-xl inline-block border-4 border-emerald-500/40">
+          <QRCodeSVG
+            value={exactWorkingUrl}
+            size={220}
+            level="H"
+            includeMargin={false}
+            fgColor="#0f172a"
+            bgColor="#ffffff"
           />
         </div>
 
-        {/* 3 Simple Instructions */}
+        {/* 3 Step Visual Guide */}
         <div className="bg-slate-950 rounded-2xl p-4 border border-slate-800 text-left space-y-2.5 text-xs text-slate-300">
           <div className="flex items-start space-x-2.5">
             <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">1</span>
-            <span>Open your <strong>iPhone Camera</strong> and point it at the QR code above.</span>
+            <span>Open your <strong>iPhone Camera</strong> and aim it at this QR code.</span>
           </div>
 
           <div className="flex items-start space-x-2.5">
             <span className="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">2</span>
-            <span>Tap the yellow <strong>Safari link</strong> that appears on your screen.</span>
+            <span>Tap the yellow <strong>alexmohit825.github.io</strong> link in Safari.</span>
           </div>
 
           <div className="flex items-start space-x-2.5">
             <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-[11px] flex-shrink-0 mt-0.5">3</span>
-            <span>In Safari, tap the <strong>Share button</strong> (square with arrow) $\rightarrow$ select <strong>"Add to Home Screen"</strong>.</span>
+            <span>Tap the <strong>Share button</strong> (square with arrow) $\rightarrow$ select <strong>"Add to Home Screen"</strong>.</span>
           </div>
         </div>
 
         {/* Direct Link Alternative */}
         <div className="pt-1">
           <a
-            href={exactLiveUrl}
+            href={exactWorkingUrl}
             target="_blank"
             rel="noreferrer"
             className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold inline-flex items-center space-x-1"
           >
-            <span>Or open directly: alexmohit825.github.io/vigilOR</span>
+            <span>Direct link: alexmohit825.github.io/vigilOR/</span>
             <ExternalLink className="w-3 h-3" />
           </a>
         </div>
