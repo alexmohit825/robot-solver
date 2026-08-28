@@ -22,6 +22,17 @@ export function App() {
   const [selectedPatentInnovation, setSelectedPatentInnovation] = useState<InnovationDossier | null>(null);
   const [isQRCodeOpen, setIsQRCodeOpen] = useState<boolean>(false);
   
+  // Enforce document title and clean favicon dynamically
+  useEffect(() => {
+    document.title = 'Surgical Innovation Engine (SIE) | Top 100 Portfolio & Patent Studio';
+    
+    // Force cache-busting on favicon
+    const links = document.querySelectorAll("link[rel*='icon']");
+    links.forEach((link: any) => {
+      link.href = './icon.svg?v=' + Date.now();
+    });
+  }, [activeTab]);
+
   // State for active blueprint modal
   const [activeBlueprint, setActiveBlueprint] = useState<{
     title: string;
