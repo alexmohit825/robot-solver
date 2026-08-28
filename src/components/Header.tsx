@@ -1,10 +1,10 @@
 import React from 'react';
-import { ShieldCheck, ShieldAlert, RefreshCw, Calendar, Users, Sliders, PlayCircle, History, Cloud, User, Mail, QrCode, Smartphone } from 'lucide-react';
-import { ICloudConnectionConfig, SurgeonProfile, EmailRelayConfig } from '../types/vigilor';
+import { ShieldCheck, RefreshCw, Calendar, Users, Sliders, PlayCircle, History, Cloud, Mail, FileSearch } from 'lucide-react';
+import { ICloudConnectionConfig, SurgeonProfile } from '../types/vigilor';
 
 interface HeaderProps {
-  activeTab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit';
-  setActiveTab: (tab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit') => void;
+  activeTab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit' | 'calendar-audit';
+  setActiveTab: (tab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit' | 'calendar-audit') => void;
   isPaused: boolean;
   isSyncing: boolean;
   onManualSync: () => void;
@@ -13,7 +13,6 @@ interface HeaderProps {
   profile: SurgeonProfile;
   onOpenProfileModal: () => void;
   onOpenEmailModal: () => void;
-  onOpenQrModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -27,7 +26,6 @@ export const Header: React.FC<HeaderProps> = ({
   profile,
   onOpenProfileModal,
   onOpenEmailModal,
-  onOpenQrModal,
 }) => {
   return (
     <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
@@ -61,6 +59,18 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Calendar className="w-4 h-4" />
               <span>Overview</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('calendar-audit')}
+              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                activeTab === 'calendar-audit'
+                  ? 'bg-emerald-500 text-white shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+              }`}
+            >
+              <FileSearch className="w-4 h-4 text-emerald-400" />
+              <span>Calendar Audit</span>
             </button>
 
             <button
@@ -170,6 +180,14 @@ export const Header: React.FC<HeaderProps> = ({
             Overview
           </button>
           <button
+            onClick={() => setActiveTab('calendar-audit')}
+            className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
+              activeTab === 'calendar-audit' ? 'bg-emerald-500 text-white' : 'text-slate-400'
+            }`}
+          >
+            Calendar Audit
+          </button>
+          <button
             onClick={() => setActiveTab('rules')}
             className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap ${
               activeTab === 'rules' ? 'bg-emerald-500 text-white' : 'text-slate-400'
@@ -191,7 +209,7 @@ export const Header: React.FC<HeaderProps> = ({
               activeTab === 'simulator' ? 'bg-emerald-500 text-white' : 'text-slate-400'
             }`}
           >
-            Email Simulator
+            Simulator
           </button>
           <button
             onClick={() => setActiveTab('audit')}
@@ -200,12 +218,6 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             Audit Logs
-          </button>
-          <button
-            onClick={onOpenQrModal}
-            className="px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap bg-sky-500/20 text-sky-300 border border-sky-500/30"
-          >
-            QR Code
           </button>
         </div>
       </div>

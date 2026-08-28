@@ -9,7 +9,7 @@ interface DashboardViewProps {
   notifications: NotificationRecord[];
   profile: SurgeonProfile;
   icloudConfig: ICloudConnectionConfig;
-  onNavigate: (tab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit') => void;
+  onNavigate: (tab: 'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit' | 'calendar-audit') => void;
   onToggleRule: (ruleId: string) => void;
   onOpenICloudModal: () => void;
 }
@@ -50,18 +50,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              onClick={() => onNavigate('simulator')}
+              onClick={() => onNavigate('calendar-audit')}
               className="flex items-center space-x-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-500/25"
             >
-              <PlayCircle className="w-4 h-4" />
-              <span>Test in Simulator</span>
+              <Calendar className="w-4 h-4" />
+              <span>Audit Pre-Existing Calendar</span>
             </button>
             <button
-              onClick={onOpenICloudModal}
+              onClick={() => onNavigate('simulator')}
               className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-medium text-sm transition-all"
             >
-              <Calendar className="w-4 h-4 text-sky-400" />
-              <span>CalDAV Settings</span>
+              <PlayCircle className="w-4 h-4 text-emerald-400" />
+              <span>Email Simulator</span>
             </button>
           </div>
         </div>

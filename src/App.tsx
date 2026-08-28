@@ -6,10 +6,10 @@ import { RuleManager } from './components/RuleManager';
 import { SchedulerDirectory } from './components/SchedulerDirectory';
 import { SimulatorPlayground } from './components/SimulatorPlayground';
 import { AuditLogView } from './components/AuditLogView';
+import { CalendarAuditView } from './components/CalendarAuditView';
 import { ICloudConnectionModal } from './components/iCloudConnectionModal';
 import { ProfileModal } from './components/ProfileModal';
 import { EmailDiagnosticsModal } from './components/EmailDiagnosticsModal';
-import { QrInstallModal } from './components/QrInstallModal';
 
 import { storageService } from './services/storageService';
 import { ICloudCalDAVClient } from './engine/caldavClient';
@@ -18,7 +18,7 @@ import { ProtectionRule, Scheduler, NotificationRecord, ICloudConnectionConfig, 
 
 export const App: React.FC = () => {
   // App State
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'rules' | 'schedulers' | 'simulator' | 'audit' | 'calendar-audit'>('dashboard');
   const [rules, setRules] = useState<ProtectionRule[]>(storageService.getRules());
   const [schedulers, setSchedulers] = useState<Scheduler[]>(storageService.getSchedulers());
   const [notifications, setNotifications] = useState<NotificationRecord[]>(storageService.getNotifications());
@@ -31,7 +31,6 @@ export const App: React.FC = () => {
   const [isICloudModalOpen, setIsICloudModalOpen] = useState<boolean>(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
-  const [isQrModalOpen, setIsQrModalOpen] = useState<boolean>(false);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(icloudConfig.lastSyncAt);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -116,7 +115,7 @@ export const App: React.FC = () => {
     const updated = [newRecord, ...notifications];
     setNotifications(updated);
     storageService.saveNotifications(updated);
-    triggerToast(`Email alert sent to ${newRecord.schedulerName}`);
+    triggerToast(`Email alert recorded for ${newRecord.schedulerName}`);
   };
 
   const handleAckNotification = (notificationId: string, status: 'ACKNOWLEDGED' | 'CONFLICT') => {
@@ -182,7 +181,6 @@ export const App: React.FC = () => {
         profile={profile}
         onOpenProfileModal={() => setIsProfileModalOpen(true)}
         onOpenEmailModal={() => setIsEmailModalOpen(true)}
-        onOpenQrModal={() => setIsQrModalOpen(true)}
       />
 
       {/* Sentinel Live Status Banner */}
@@ -206,6 +204,16 @@ export const App: React.FC = () => {
             onNavigate={setActiveTab}
             onToggleRule={handleToggleRule}
             onOpenICloudModal={() => setIsICloudModalOpen(true)}
+          />
+        )}
+
+        {activeTab === 'calendar-audit' && (
+          <CalendarAuditView
+            rules={rules}
+            schedulers={schedulers}
+            profile={profile}
+            onRecordNotification={handleRecordNotification}
+            onNavigate={setActiveTab}
           />
         )}
 
