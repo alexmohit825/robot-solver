@@ -9,6 +9,7 @@ import { AuditLogView } from './components/AuditLogView';
 import { ICloudConnectionModal } from './components/iCloudConnectionModal';
 import { ProfileModal } from './components/ProfileModal';
 import { EmailDiagnosticsModal } from './components/EmailDiagnosticsModal';
+import { QrInstallModal } from './components/QrInstallModal';
 
 import { storageService } from './services/storageService';
 import { ICloudCalDAVClient } from './engine/caldavClient';
@@ -30,6 +31,7 @@ export const App: React.FC = () => {
   const [isICloudModalOpen, setIsICloudModalOpen] = useState<boolean>(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState<boolean>(false);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(icloudConfig.lastSyncAt);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -180,6 +182,7 @@ export const App: React.FC = () => {
         profile={profile}
         onOpenProfileModal={() => setIsProfileModalOpen(true)}
         onOpenEmailModal={() => setIsEmailModalOpen(true)}
+        onOpenQrModal={() => setIsQrModalOpen(true)}
       />
 
       {/* Sentinel Live Status Banner */}
@@ -277,11 +280,18 @@ export const App: React.FC = () => {
         schedulers={schedulers}
       />
 
+      {/* iPhone QR Install Modal */}
+      <QrInstallModal
+        isOpen={isQrModalOpen}
+        onClose={() => setIsQrModalOpen(false)}
+        appUrl="https://alexmohit825.github.io/vigilOR/"
+      />
+
       {/* Footer */}
       <footer className="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>VigilOR • {profile.name}, {profile.title} • {profile.specialty}</span>
-          <span>Apple iCloud CalDAV (RFC 4791) • Official OR Blackout Email Relay</span>
+          <span>Apple iCloud CalDAV (RFC 4791) • MultiCare Neuroscience Institute</span>
         </div>
       </footer>
     </div>
