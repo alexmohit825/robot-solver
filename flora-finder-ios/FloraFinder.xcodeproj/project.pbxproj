@@ -1,0 +1,328 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1001001 /* FloraFinderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001001 /* FloraFinderApp.swift */; };
+		1001002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001002 /* ContentView.swift */; };
+		1001003 /* BotanicalSpecimen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001003 /* BotanicalSpecimen.swift */; };
+		1001004 /* DiagnosticReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001004 /* DiagnosticReport.swift */; };
+		1001005 /* CareGuide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001005 /* CareGuide.swift */; };
+		1001006 /* CameraFeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001006 /* CameraFeedManager.swift */; };
+		1001007 /* PlantVisionClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001007 /* PlantVisionClassifier.swift */; };
+		1001008 /* GeminiBotanicalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001008 /* GeminiBotanicalService.swift */; };
+		1001009 /* LiveViewfinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001009 /* LiveViewfinderView.swift */; };
+		1001010 /* ARReticleOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001010 /* ARReticleOverlay.swift */; };
+		1001011 /* SpecimenDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001011 /* SpecimenDetailSheet.swift */; };
+		1001012 /* CareScheduleCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001012 /* CareScheduleCard.swift */; };
+		1001013 /* DiseaseTriageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001013 /* DiseaseTriageView.swift */; };
+		1001014 /* FieldJournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001014 /* FieldJournalView.swift */; };
+		1001015 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001015 /* SettingsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0001001 /* FloraFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FloraFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2001001 /* FloraFinderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloraFinderApp.swift; sourceTree = "<group>"; };
+		2001002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2001003 /* BotanicalSpecimen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotanicalSpecimen.swift; sourceTree = "<group>"; };
+		2001004 /* DiagnosticReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticReport.swift; sourceTree = "<group>"; };
+		2001005 /* CareGuide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareGuide.swift; sourceTree = "<group>"; };
+		2001006 /* CameraFeedManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraFeedManager.swift; sourceTree = "<group>"; };
+		2001007 /* PlantVisionClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantVisionClassifier.swift; sourceTree = "<group>"; };
+		2001008 /* GeminiBotanicalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiBotanicalService.swift; sourceTree = "<group>"; };
+		2001009 /* LiveViewfinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewfinderView.swift; sourceTree = "<group>"; };
+		2001010 /* ARReticleOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARReticleOverlay.swift; sourceTree = "<group>"; };
+		2001011 /* SpecimenDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecimenDetailSheet.swift; sourceTree = "<group>"; };
+		2001012 /* CareScheduleCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareScheduleCard.swift; sourceTree = "<group>"; };
+		2001013 /* DiseaseTriageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiseaseTriageView.swift; sourceTree = "<group>"; };
+		2001014 /* FieldJournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldJournalView.swift; sourceTree = "<group>"; };
+		2001015 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		2001016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4001001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5001001 = {
+			isa = PBXGroup;
+			children = (
+				5001002 /* FloraFinder */,
+				5001009 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5001002 /* FloraFinder */ = {
+			isa = PBXGroup;
+			children = (
+				5001003 /* App */,
+				5001004 /* Models */,
+				5001005 /* Core */,
+				5001006 /* Views */,
+				5001007 /* Resources */,
+			);
+			path = FloraFinder;
+			sourceTree = "<group>";
+		};
+		5001003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2001001 /* FloraFinderApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		5001004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				2001003 /* BotanicalSpecimen.swift */,
+				2001004 /* DiagnosticReport.swift */,
+				2001005 /* CareGuide.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5001005 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				2001006 /* CameraFeedManager.swift */,
+				2001007 /* PlantVisionClassifier.swift */,
+				2001008 /* GeminiBotanicalService.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		5001006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2001002 /* ContentView.swift */,
+				2001009 /* LiveViewfinderView.swift */,
+				2001010 /* ARReticleOverlay.swift */,
+				2001011 /* SpecimenDetailSheet.swift */,
+				2001012 /* CareScheduleCard.swift */,
+				2001013 /* DiseaseTriageView.swift */,
+				2001014 /* FieldJournalView.swift */,
+				2001015 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5001007 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2001016 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		5001009 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0001001 /* FloraFinder.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6001001 /* FloraFinder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7001001 /* Build configuration list for PBXNativeTarget "FloraFinder" */;
+			buildPhases = (
+				8001001 /* Sources */,
+				4001001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FloraFinder;
+			productName = FloraFinder;
+			productReference = 0001001 /* FloraFinder.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9001001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					6001001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 7001002 /* Build configuration list for PBXProject "FloraFinder" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5001001;
+			productRefGroup = 5001009 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6001001 /* FloraFinder */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8001001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1001001 /* FloraFinderApp.swift in Sources */,
+				1001002 /* ContentView.swift in Sources */,
+				1001003 /* BotanicalSpecimen.swift in Sources */,
+				1001004 /* DiagnosticReport.swift in Sources */,
+				1001005 /* CareGuide.swift in Sources */,
+				1001006 /* CameraFeedManager.swift in Sources */,
+				1001007 /* PlantVisionClassifier.swift in Sources */,
+				1001008 /* GeminiBotanicalService.swift in Sources */,
+				1001009 /* LiveViewfinderView.swift in Sources */,
+				1001010 /* ARReticleOverlay.swift in Sources */,
+				1001011 /* SpecimenDetailSheet.swift in Sources */,
+				1001012 /* CareScheduleCard.swift in Sources */,
+				1001013 /* DiseaseTriageView.swift in Sources */,
+				1001014 /* FieldJournalView.swift in Sources */,
+				1001015 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		7001003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 523MJL63MC;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FloraFinder/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexmohit.florafinder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7001004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 523MJL63MC;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FloraFinder/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexmohit.florafinder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7001005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		7001006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7001001 /* Build configuration list for PBXNativeTarget "FloraFinder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7001003 /* Debug */,
+				7001004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7001002 /* Build configuration list for PBXProject "FloraFinder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7001005 /* Debug */,
+				7001006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 9001001 /* Project object */;
+}
