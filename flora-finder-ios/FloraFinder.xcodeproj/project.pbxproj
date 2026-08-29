@@ -27,20 +27,20 @@
 /* Begin PBXFileReference section */
 		0001001 /* FloraFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FloraFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2001001 /* FloraFinderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloraFinderApp.swift; sourceTree = "<group>"; };
-		2001002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2001002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Main/ContentView.swift"; sourceTree = "<group>"; };
 		2001003 /* BotanicalSpecimen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotanicalSpecimen.swift; sourceTree = "<group>"; };
 		2001004 /* DiagnosticReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticReport.swift; sourceTree = "<group>"; };
 		2001005 /* CareGuide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareGuide.swift; sourceTree = "<group>"; };
-		2001006 /* CameraFeedManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraFeedManager.swift; sourceTree = "<group>"; };
-		2001007 /* PlantVisionClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantVisionClassifier.swift; sourceTree = "<group>"; };
-		2001008 /* GeminiBotanicalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiBotanicalService.swift; sourceTree = "<group>"; };
-		2001009 /* LiveViewfinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewfinderView.swift; sourceTree = "<group>"; };
-		2001010 /* ARReticleOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARReticleOverlay.swift; sourceTree = "<group>"; };
-		2001011 /* SpecimenDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecimenDetailSheet.swift; sourceTree = "<group>"; };
-		2001012 /* CareScheduleCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareScheduleCard.swift; sourceTree = "<group>"; };
-		2001013 /* DiseaseTriageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiseaseTriageView.swift; sourceTree = "<group>"; };
-		2001014 /* FieldJournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldJournalView.swift; sourceTree = "<group>"; };
-		2001015 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		2001006 /* CameraFeedManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Camera/CameraFeedManager.swift"; sourceTree = "<group>"; };
+		2001007 /* PlantVisionClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Vision/PlantVisionClassifier.swift"; sourceTree = "<group>"; };
+		2001008 /* GeminiBotanicalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Remote/GeminiBotanicalService.swift"; sourceTree = "<group>"; };
+		2001009 /* LiveViewfinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraHUD/LiveViewfinderView.swift"; sourceTree = "<group>"; };
+		2001010 /* ARReticleOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraHUD/ARReticleOverlay.swift"; sourceTree = "<group>"; };
+		2001011 /* SpecimenDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Specimen/SpecimenDetailSheet.swift"; sourceTree = "<group>"; };
+		2001012 /* CareScheduleCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Specimen/CareScheduleCard.swift"; sourceTree = "<group>"; };
+		2001013 /* DiseaseTriageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diagnostic/DiseaseTriageView.swift"; sourceTree = "<group>"; };
+		2001014 /* FieldJournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Journal/FieldJournalView.swift"; sourceTree = "<group>"; };
+		2001015 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Main/SettingsView.swift"; sourceTree = "<group>"; };
 		2001016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
