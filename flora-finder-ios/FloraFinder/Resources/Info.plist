@@ -5,11 +5,11 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleDisplayName</key>
-    <string>Flora Finder</string>
+    <string>FloraFinder AI</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
-    <string>com.alexmohit.florafinder</string>
+    <string>com.AlexMohit.FloraFinderAI</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
@@ -23,11 +23,11 @@
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSCameraUsageDescription</key>
-    <string>Flora Finder requires camera access to identify plants and diagnose plant health in real time.</string>
+    <string>FloraFinder AI requires camera access to identify plants and diagnose plant health in real time.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Flora Finder uses your location to record discovery coordinates in your offline botanical field journal.</string>
+    <string>FloraFinder AI uses your location to record discovery coordinates in your offline botanical field journal.</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Flora Finder allows you to select photos from your library to diagnose plant diseases and view care guides.</string>
+    <string>FloraFinder AI allows you to select photos from your library to diagnose plant diseases and view care guides.</string>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>
