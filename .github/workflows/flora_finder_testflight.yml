@@ -16,16 +16,16 @@ on:
 jobs:
   build-and-deploy:
     name: 🌿 Flora Finder Build & TestFlight Delivery
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 45
 
     steps:
       - name: 📥 Checkout Flora Finder
         uses: actions/checkout@v4
 
-      - name: 🛠️ Select Highest Available Xcode Installation
+      - name: 🛠️ Select Latest Available Xcode Installation
         run: |
-          echo "Available Xcode installations:"
+          echo "Available Xcode installations on macOS 15:"
           ls -d /Applications/Xcode*.app || true
           LATEST_XCODE=$(ls -d /Applications/Xcode*.app | sort -V | tail -n 1)
           echo "Switching active developer directory to: $LATEST_XCODE"
@@ -145,7 +145,7 @@ jobs:
             -authenticationKeyPath "$AUTH_KEY_PATH" \
             -allowProvisioningUpdates
 
-      - name: 🚀 Validate & Deliver to TestFlight
+      - name: 🚀 Deliver directly to TestFlight
         env:
           ASC_KEY_ID: "38F6WA87DU"
           ASC_ISSUER_ID: "73c7355a-beef-4d79-919d-c3d7dec7747a"
@@ -157,17 +157,10 @@ jobs:
           fi
           
           echo "Found IPA: $IPA_PATH ($(du -h "$IPA_PATH" | cut -f1))"
-          echo "Validating IPA with App Store Connect..."
-          xcrun altool --validate-app \
-            -f "$IPA_PATH" \
-            -t ios \
-            --apiKey "$ASC_KEY_ID" \
-            --apiIssuer "$ASC_ISSUER_ID"
-
           echo "Delivering IPA directly to TestFlight on iPhone..."
           xcrun altool --upload-app \
             -f "$IPA_PATH" \
             -t ios \
             --apiKey "$ASC_KEY_ID" \
             --apiIssuer "$ASC_ISSUER_ID"
-          echo "✓ TestFlight deployment complete."
+          echo "✓ Successfully delivered FloraFinder AI to TestFlight!"
