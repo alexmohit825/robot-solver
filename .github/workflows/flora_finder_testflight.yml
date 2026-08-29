@@ -23,11 +23,13 @@ jobs:
       - name: 📥 Checkout Flora Finder
         uses: actions/checkout@v4
 
-      - name: 🛠️ Select Latest Xcode 16 / macOS SDK
+      - name: 🛠️ Select Highest Available Xcode Installation
         run: |
-          echo "Available Xcode versions:"
+          echo "Available Xcode installations:"
           ls -d /Applications/Xcode*.app || true
-          sudo xcode-select -s /Applications/Xcode_16.0.app || sudo xcode-select -s /Applications/Xcode_16.app || sudo xcode-select -s /Applications/Xcode.app
+          LATEST_XCODE=$(ls -d /Applications/Xcode*.app | sort -V | tail -n 1)
+          echo "Switching active developer directory to: $LATEST_XCODE"
+          sudo xcode-select -s "$LATEST_XCODE"
           xcodebuild -version
           swift --version
 
