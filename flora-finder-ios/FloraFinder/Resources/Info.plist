@@ -20,6 +20,8 @@
     <string>1.0.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSCameraUsageDescription</key>
@@ -28,6 +30,8 @@
     <string>FloraFinder AI uses your location to record discovery coordinates in your offline botanical field journal.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>FloraFinder AI allows you to select photos from your library to diagnose plant diseases and view care guides.</string>
+    <key>UILaunchScreen</key>
+    <dict/>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>

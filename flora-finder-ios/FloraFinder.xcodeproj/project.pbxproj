@@ -22,6 +22,7 @@
 		1001013 /* DiseaseTriageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001013 /* DiseaseTriageView.swift */; };
 		1001014 /* FieldJournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001014 /* FieldJournalView.swift */; };
 		1001015 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2001015 /* SettingsView.swift */; };
+		1001016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2001017 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		2001014 /* FieldJournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Journal/FieldJournalView.swift"; sourceTree = "<group>"; };
 		2001015 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Main/SettingsView.swift"; sourceTree = "<group>"; };
 		2001016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2001017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4001002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1001016 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXGroup section */
 		5001001 = {
@@ -122,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				2001016 /* Info.plist */,
+				2001017 /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -143,6 +157,7 @@
 			buildPhases = (
 				8001001 /* Sources */,
 				4001001 /* Frameworks */,
+				4001002 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -160,11 +175,11 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					6001001 = {
-						CreatedOnToolsVersion = 15.0;
+						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};

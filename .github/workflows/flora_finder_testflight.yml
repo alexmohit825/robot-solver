@@ -23,9 +23,11 @@ jobs:
       - name: 📥 Checkout Flora Finder
         uses: actions/checkout@v4
 
-      - name: 🛠️ Select Xcode 15.4 / 16.0
+      - name: 🛠️ Select Latest Xcode 16 / macOS SDK
         run: |
-          sudo xcode-select -s /Applications/Xcode_15.4.app || sudo xcode-select -s /Applications/Xcode.app
+          echo "Available Xcode versions:"
+          ls -d /Applications/Xcode*.app || true
+          sudo xcode-select -s /Applications/Xcode_16.0.app || sudo xcode-select -s /Applications/Xcode_16.app || sudo xcode-select -s /Applications/Xcode.app
           xcodebuild -version
           swift --version
 
@@ -103,7 +105,7 @@ jobs:
           mkdir -p build
           AUTH_KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
           
-          echo "Archiving FloraFinder scheme..."
+          echo "Archiving FloraFinder with App Store Connect automated provisioning..."
           xcodebuild archive \
             -project FloraFinder.xcodeproj \
             -scheme FloraFinder \
