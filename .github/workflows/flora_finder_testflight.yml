@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'flora-finder-ios/**'
+      - '.github/workflows/flora_finder_testflight.yml'
   workflow_dispatch:
     inputs:
       build_notes:
@@ -28,16 +29,61 @@ jobs:
           xcodebuild -version
           swift --version
 
-      - name: 🔑 Configure App Store Connect API Key
+      - name: 🔑 Configure & Validate App Store Connect API Key
         env:
           ASC_KEY_ID: "38F6WA87DU"
           ASC_ISSUER_ID: "73c7355a-beef-4d79-919d-c3d7dec7747a"
           ASC_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
         run: |
-          mkdir -p ~/.appstoreconnect/private_keys
-          echo "$ASC_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_38F6WA87DU.p8
-          chmod 600 ~/.appstoreconnect/private_keys/AuthKey_38F6WA87DU.p8
-          echo "✓ App Store Connect API Key installed safely."
+          python3 - << 'EOF'
+          import os, base64
+
+          raw = os.environ.get("ASC_PRIVATE_KEY", "").strip()
+          key_id = os.environ.get("ASC_KEY_ID", "38F6WA87DU")
+          
+          # Handle potential base64 outer encoding
+          try:
+              decoded = base64.b64decode(raw).decode('utf-8')
+              if "PRIVATE KEY" in decoded:
+                  raw = decoded.strip()
+          except Exception:
+              pass
+
+          # Replace literal \n escapes with real newlines
+          raw = raw.replace('\\n', '\n')
+
+          # Normalize PEM structure
+          lines = [line.strip() for line in raw.split('\n') if line.strip()]
+          body_lines = [l for l in lines if "BEGIN" not in l and "END" not in l]
+          clean_body = "".join(body_lines).replace(" ", "")
+
+          # Reconstruct standard 64-char wrapped PEM
+          wrapped_body = "\n".join([clean_body[i:i+64] for i in range(0, len(clean_body), 64)])
+          pem_content = f"-----BEGIN PRIVATE KEY-----\n{wrapped_body}\n-----END PRIVATE KEY-----\n"
+
+          # Write to ~/.appstoreconnect/private_keys and ~/private_keys
+          for dest_dir in [
+              os.path.expanduser("~/.appstoreconnect/private_keys"),
+              os.path.expanduser("~/private_keys"),
+              os.path.expanduser("~/.private_keys")
+          ]:
+              os.makedirs(dest_dir, exist_ok=True)
+              p8_path = os.path.join(dest_dir, f"AuthKey_{key_id}.p8")
+              with open(p8_path, "w") as f:
+                  f.write(pem_content)
+              os.chmod(p8_path, 0o600)
+              print(f"✓ Installed validated PEM key at: {p8_path}")
+          EOF
+
+      - name: 🧪 Validate Apple API Key Connection
+        env:
+          ASC_KEY_ID: "38F6WA87DU"
+          ASC_ISSUER_ID: "73c7355a-beef-4d79-919d-c3d7dec7747a"
+        run: |
+          echo "Connecting to Apple App Store Connect API..."
+          xcrun altool --list-apps \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
 
       - name: 🛡️ Audit iOS Privacy Usage Descriptions
         run: |
@@ -57,7 +103,7 @@ jobs:
           mkdir -p build
           AUTH_KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
           
-          echo "Archiving FloraFinder with App Store Connect automated provisioning..."
+          echo "Archiving FloraFinder scheme..."
           xcodebuild archive \
             -project FloraFinder.xcodeproj \
             -scheme FloraFinder \
@@ -85,6 +131,7 @@ jobs:
         run: |
           cd flora-finder-ios
           AUTH_KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+          echo "Exporting IPA with App Store provisioning updates..."
           xcodebuild -exportArchive \
             -archivePath build/FloraFinder.xcarchive \
             -exportOptionsPlist ExportOptions.plist \
@@ -92,30 +139,31 @@ jobs:
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
             -authenticationKeyPath "$AUTH_KEY_PATH" \
-            -allowProvisioningUpdates || true
+            -allowProvisioningUpdates
 
       - name: 🚀 Validate & Deliver to TestFlight
         env:
           ASC_KEY_ID: "38F6WA87DU"
           ASC_ISSUER_ID: "73c7355a-beef-4d79-919d-c3d7dec7747a"
         run: |
-          IPA_PATH=$(find flora-finder-ios/build/Export -name "*.ipa" 2>/dev/null | head -n 1)
-          if [ -n "$IPA_PATH" ]; then
-            echo "Found IPA at: $IPA_PATH"
-            echo "Validating IPA with App Store Connect..."
-            xcrun altool --validate-app \
-              -f "$IPA_PATH" \
-              -t ios \
-              --apiKey "$ASC_KEY_ID" \
-              --apiIssuer "$ASC_ISSUER_ID"
-
-            echo "Delivering IPA directly to TestFlight on iPhone..."
-            xcrun altool --upload-app \
-              -f "$IPA_PATH" \
-              -t ios \
-              --apiKey "$ASC_KEY_ID" \
-              --apiIssuer "$ASC_ISSUER_ID"
-            echo "✓ TestFlight deployment complete."
-          else
-            echo "IPA ready for distribution."
+          IPA_PATH=$(find flora-finder-ios/build/Export -name "*.ipa" | head -n 1)
+          if [ -z "$IPA_PATH" ]; then
+            echo "Error: No .ipa artifact found in export directory."
+            exit 1
           fi
+          
+          echo "Found IPA: $IPA_PATH ($(du -h "$IPA_PATH" | cut -f1))"
+          echo "Validating IPA with App Store Connect..."
+          xcrun altool --validate-app \
+            -f "$IPA_PATH" \
+            -t ios \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
+
+          echo "Delivering IPA directly to TestFlight on iPhone..."
+          xcrun altool --upload-app \
+            -f "$IPA_PATH" \
+            -t ios \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
+          echo "✓ TestFlight deployment complete."
