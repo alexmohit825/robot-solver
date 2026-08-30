@@ -11,20 +11,21 @@ import { InnovationDetailModal } from './components/InnovationDetailModal';
 import { PatentAnalysisDrawer } from './components/PatentAnalysisDrawer';
 import { PrototypeBlueprintModal } from './components/PrototypeBlueprintModal';
 import { QRCodeModal } from './components/QRCodeModal';
+import { RobotSolverView } from './components/robotic/RobotSolverView';
 import { TOP_100_INNOVATIONS } from './data/top100Innovations';
 import { TOP_100_HANDHELD_SUITE } from './data/top100HandheldInstruments';
 import { QUICK_WIN_TOOLS } from './data/quickWinTools';
 import { InnovationDossier, SurgeonReviewState, ReviewStatus, BlueprintSpec, KinematicParameters } from './types';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export'>('portfolio');
+  const [activeTab, setActiveTab] = useState<'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export' | 'robot_solver'>('robot_solver');
   const [selectedInnovation, setSelectedInnovation] = useState<InnovationDossier | null>(null);
   const [selectedPatentInnovation, setSelectedPatentInnovation] = useState<InnovationDossier | null>(null);
   const [isQRCodeOpen, setIsQRCodeOpen] = useState<boolean>(false);
   
   // Enforce document title and clean favicon dynamically
   useEffect(() => {
-    document.title = 'Surgical Innovation Engine (SIE) | Top 100 Portfolio & Patent Studio';
+    document.title = 'Robot Solver | Spine Robotics Diagnostic & Error Resolver (ExcelsiusGPS & Mazor X)';
     
     // Force cache-busting on favicon
     const links = document.querySelectorAll("link[rel*='icon']");
@@ -126,6 +127,10 @@ export function App() {
 
       {/* Main Viewport */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {activeTab === 'robot_solver' && (
+          <RobotSolverView />
+        )}
+
         {activeTab === 'portfolio' && (
           <InnovationCardDeck 
             innovations={TOP_100_INNOVATIONS}
@@ -246,7 +251,7 @@ export function App() {
 
       {/* Persistent Footer */}
       <footer className="border-t border-slate-800/80 bg-slate-950 py-4 text-center text-xs font-mono text-slate-500">
-        <p>Surgical Innovation Engine (SIE) • GitHub Pages Deployment Ready • Client-Side Encrypted (AES-256)</p>
+        <p>Robot Solver • Intraoperative Robotic Spine Error Resolver (ExcelsiusGPS® & Mazor X™ Stealth Edition) • Client-Side Encrypted</p>
       </footer>
     </div>
   );

@@ -9,12 +9,13 @@ import {
   Scale, 
   QrCode,
   GitFork,
-  Wrench
+  Wrench,
+  Radio
 } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export';
-  setActiveTab: (tab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export') => void;
+  activeTab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export' | 'robot_solver';
+  setActiveTab: (tab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export' | 'robot_solver') => void;
   shortlistCount: number;
   totalInnovationsCount: number;
   onOpenQRCode: () => void;
@@ -33,19 +34,19 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
         {/* Branding & Master Operator Persona */}
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-cyan-500 to-teal-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/30">
-            <Cpu className="w-6 h-6 text-slate-950 stroke-[2.5]" />
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-amber-500/20 ring-1 ring-amber-400/30">
+            <Radio className="w-6 h-6 text-slate-950 stroke-[2.5]" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
               <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
-                SURGICAL INNOVATION ENGINE <span className="text-xs px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono">v1.4</span>
+                ROBOT SOLVER <span className="text-xs px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800/60 font-mono">v2.0</span>
               </h1>
             </div>
             <p className="text-xs text-slate-400 font-mono flex items-center gap-2">
-              <span>Cross-Disciplinary R&D</span>
+              <span>Intraoperative Error Resolver</span>
               <span className="text-slate-600">•</span>
-              <span className="text-amber-400">Master Surgeon Curation Studio & Patent Center</span>
+              <span className="text-amber-400 font-semibold">Globus ExcelsiusGPS® & Medtronic Mazor X™ Stealth Edition</span>
             </p>
           </div>
         </div>
@@ -53,6 +54,19 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Global Action & Metric Badges */}
         <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono">
           
+          {/* Dedicated Robot Solver Quick Access Button */}
+          <button
+            onClick={() => setActiveTab('robot_solver')}
+            className={`px-3 py-1.5 rounded-lg border flex items-center space-x-1.5 transition-all font-semibold shadow-md ${
+              activeTab === 'robot_solver'
+                ? 'bg-amber-500/30 text-amber-300 border-amber-400/80 shadow-amber-500/20 ring-1 ring-amber-400/50'
+                : 'bg-amber-950/60 text-amber-400 border-amber-700/60 hover:bg-amber-900/60'
+            }`}
+          >
+            <Cpu className="w-3.5 h-3.5 text-amber-400" />
+            <span>🤖 Robot Solver</span>
+          </button>
+
           {/* iPhone QR Code Quick Access Button */}
           <button
             onClick={onOpenQRCode}
@@ -101,6 +115,18 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Navigation Ribbon Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80 overflow-x-auto">
         <nav className="flex space-x-6 min-w-max">
+          <button
+            onClick={() => setActiveTab('robot_solver')}
+            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
+              activeTab === 'robot_solver'
+                ? 'border-amber-400 text-amber-400'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            }`}
+          >
+            <Cpu className="w-4 h-4 text-amber-400" />
+            <span>🤖 Robotic Spine Solver (Excelsius & Mazor X)</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('portfolio')}
             className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${

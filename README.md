@@ -1,14 +1,24 @@
-# Surgical Innovation Engine (SIE) v1.4
+# Robot Solver v2.0
+## Intraoperative Robotic Spine Error Resolver (ExcelsiusGPS® & Mazor X™ Stealth Edition)
 
-**Surgical Innovation Engine (SIE)** is an advanced cross-disciplinary innovation platform and patent analysis studio engineered specifically for spine surgery and neurosurgery.
+**Robot Solver** is a high-speed, intraoperative error management system and diagnostic decision engine for spinal robotics, engineered specifically for **Globus ExcelsiusGPS®** and **Medtronic Mazor X™ Stealth Edition**.
+
+---
 
 ## Core Capabilities
-- **Top 100 Frontier Innovations:** Multi-disciplinary transfers from Aerospace, Defense LiDAR, Ophthalmology phacoemulsification, and Micro-Otology.
-- **Top 100 Handheld Instruments (Low-Capital):** Direct machine-shop prototypes for suctions, rongeurs, probes, bipolars, retractors, and curettes ($300 - $1,400 prototype cost).
-- **Top 100 Quick-Win Intraop Tools:** Rapid-adoption OR accessories (< 30–60 days).
-- **Dynamic 2D CAD Blueprints:** Parametric ANSI Y14.5M orthographic drafting drawings (Elevation, Plan, Section A-A, 3D Isometric) with GD&T tolerances.
-- **Deep Patent Analysis Studio:** Definitive filing recommendations (`FILE PROVISIONAL` vs `LEVERAGE EXPIRED PUBLIC DOMAIN`), 35 U.S.C. § 112 claim sets, and 10-point USPTO checklist.
-- **Mobile Safari PWA:** Live scannable QR code in header for 24/7 standalone iPhone access.
+- **Dual-Platform Live Switcher:** Instant toggle between Globus ExcelsiusGPS (Active IR LEDs, DRB/Surveillance arrays, Planar 2D/3D Matching) and Medtronic Mazor X (StealthStation S8 Serial Link, 3D Optical Camera, Bone Mount Bridge, O-arm 2 Volumetric Registration).
+- **Physical & Navigational Symptom Engine:** Step-by-step branching differential algorithm diagnosing *why* the robot is "way off" (DRB toggle, surveillance shift, facet skiving, intersegmental motion, bridge flex).
+- **Real-Time Software Error Code Decoder:** Instant de-obfuscation of console alert banners (`E-3104`, `ST-104`, `E-4020`, `REG-305`, `E-5012`, `ARM-401`, `E-2101`, `OPT-202`, etc.) with root causes and 3-step rapid fixes.
+- **Line-of-Sight & Spatial Tracking Envelope:** Interactive camera distance sweet spot visualizer ($1.8\text{m} - 2.4\text{m}$), $45^\circ$ angle guides, OR obstruction vectors, and pre-instrumentation verification checklists.
+- **Mobile Safari PWA:** Live scannable QR code in header for zero-lag intraoperative iPhone/iPad reference.
 
-## Live Deployment (All-Lowercase URL)
-- **GitHub Pages:** [https://alexmohit825.github.io/surgical-innovations-engine/](https://alexmohit825.github.io/surgical-innovations-engine/)
+---
+
+## Local Development & Build
+```bash
+# Run local dev server
+npm run dev
+
+# Build production bundle
+npm run build
+```

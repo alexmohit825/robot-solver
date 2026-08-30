@@ -1,7 +1,7 @@
 {
-  "name": "Surgical Innovation Engine",
-  "short_name": "SurgicalSIE",
-  "description": "Surgical Innovation Engine (SIE) • Cross-Disciplinary R&D & Patent Studio",
+  "name": "Robot Solver",
+  "short_name": "RobotSolver",
+  "description": "Robot Solver • Intraoperative Robotic Spine Error Resolver (Globus ExcelsiusGPS & Medtronic Mazor X)",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

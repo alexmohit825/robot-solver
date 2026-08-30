@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+const fs = require('fs');
+const path = require('path');
+const sharp = require('sharp');
+
+// 512x512 SVG Master Icon for Robot Solver
+const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <!-- Background Gradient -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -110,4 +115,65 @@
         letter-spacing="4" 
         fill="#f8fafc" 
         text-anchor="middle">ROBOT SOLVER</text>
-</svg>
+</svg>`;
+
+async function generateIcons() {
+  const publicDir = path.join(__dirname, 'public');
+  if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+  }
+
+  // 1. Write SVG icons
+  fs.writeFileSync(path.join(publicDir, 'icon.svg'), svgContent, 'utf8');
+  fs.writeFileSync(path.join(publicDir, 'apple-touch-icon.svg'), svgContent, 'utf8');
+  console.log('Saved SVG icon files.');
+
+  // 2. Generate PNGs with sharp
+  const svgBuffer = Buffer.from(svgContent);
+
+  const targets = [
+    { file: 'apple-touch-icon.png', size: 180 },
+    { file: 'apple-touch-icon-180x180.png', size: 180 },
+    { file: 'apple-touch-icon-167x167.png', size: 167 },
+    { file: 'apple-touch-icon-152x152.png', size: 152 },
+    { file: 'apple-touch-icon-120x120.png', size: 120 },
+    { file: 'favicon-192x192.png', size: 192 },
+    { file: 'pwa-512x512.png', size: 512 },
+    { file: 'favicon-32x32.png', size: 32 }
+  ];
+
+  for (const t of targets) {
+    await sharp(svgBuffer)
+      .resize(t.size, t.size)
+      .png({ quality: 100 })
+      .toFile(path.join(publicDir, t.file));
+    console.log(`Generated ${t.file} (${t.size}x${t.size})`);
+  }
+
+  // 3. Generate 180x180 Base64 for zero-network inline index.html embedding
+  const b64_180 = await sharp(svgBuffer)
+    .resize(180, 180)
+    .png()
+    .toBuffer();
+  
+  const b64_180_str = b64_180.toString('base64');
+  console.log('Base64 180x180 length:', b64_180_str.length);
+
+  // Update index.html inline data URLs
+  const indexPath = path.join(__dirname, 'index.html');
+  let indexHtml = fs.readFileSync(indexPath, 'utf8');
+
+  // Replace apple-touch-icon hrefs with new base64
+  indexHtml = indexHtml.replace(
+    /href="data:image\/png;base64,[^"]+"/g,
+    `href="data:image/png;base64,${b64_180_str}"`
+  );
+
+  fs.writeFileSync(indexPath, indexHtml, 'utf8');
+  console.log('Updated index.html with inline Base64 Apple Touch Icon.');
+}
+
+generateIcons().catch(err => {
+  console.error('Error generating icons:', err);
+  process.exit(1);
+});

@@ -1,167 +1,113 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <!-- Solid Deep Obsidian Slate Background (No transparency for iOS Safari) -->
-    <radialGradient id="sieBg" cx="50%" cy="50%" r="55%" fx="40%" fy="40%">
-      <stop offset="0%" stop-color="#0a192f"/>
-      <stop offset="45%" stop-color="#05101f"/>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#030712"/>
+      <stop offset="50%" stop-color="#0f172a"/>
       <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+
+    <!-- Radial Optical Glow -->
+    <radialGradient id="opticalGlow" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.35"/>
+      <stop offset="40%" stop-color="#3b82f6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
     </radialGradient>
 
-    <!-- Surgical Cyan Laser Gradient -->
-    <linearGradient id="sieCyan" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#00f2fe"/>
-      <stop offset="100%" stop-color="#0284c7"/>
+    <!-- Amber Glow -->
+    <radialGradient id="amberGlow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Metallic Gold/Cyan Stroke -->
+    <linearGradient id="cyanAmberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
     </linearGradient>
 
-    <!-- 24K Patent Gold Gradient -->
-    <linearGradient id="sieGold" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#d97706"/>
-      <stop offset="30%" stop-color="#f59e0b"/>
-      <stop offset="70%" stop-color="#fbbf24"/>
-      <stop offset="100%" stop-color="#fef08a"/>
-    </linearGradient>
-
-    <!-- Medical Titanium Alloy Gradient -->
-    <linearGradient id="sieTitanium" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f8fafc"/>
-      <stop offset="30%" stop-color="#cbd5e1"/>
-      <stop offset="70%" stop-color="#64748b"/>
+    <linearGradient id="goldPlate" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="50%" stop-color="#334155"/>
       <stop offset="100%" stop-color="#1e293b"/>
     </linearGradient>
 
-    <!-- Glowing Luminescent Core Gradient -->
-    <radialGradient id="corePulse" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="25%" stop-color="#38bdf8"/>
-      <stop offset="60%" stop-color="#00f2fe"/>
-      <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
-    </radialGradient>
-
-    <!-- High-Definition Filter for Retina Screens -->
-    <filter id="sieGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+    <!-- Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
   </defs>
 
-  <!-- 1. OPAQUE SOLID BASE (Required by Safari to prevent letter-fallbacks) -->
-  <rect width="512" height="512" fill="url(#sieBg)"/>
+  <!-- Base Dark Canvas -->
+  <rect width="512" height="512" rx="115" fill="url(#bgGrad)"/>
+  
+  <!-- Optical Glow Backdrops -->
+  <circle cx="256" cy="220" r="200" fill="url(#opticalGlow)"/>
+  <circle cx="256" cy="220" r="130" fill="url(#amberGlow)"/>
 
-  <!-- 2. OUTER SURGICAL VERNIER CALIPER RING & GEAR NOTCHES -->
-  <circle cx="256" cy="256" r="230" fill="none" stroke="#0e2942" stroke-width="4"/>
-  <circle cx="256" cy="256" r="218" fill="none" stroke="url(#sieCyan)" stroke-width="2" opacity="0.6"/>
-  <circle cx="256" cy="256" r="206" fill="none" stroke="#0e2942" stroke-width="1.5" stroke-dasharray="4,8"/>
+  <!-- Outer Precision Reticle Ring -->
+  <circle cx="256" cy="220" r="180" fill="none" stroke="#1e293b" stroke-width="3" stroke-dasharray="4 8"/>
+  <circle cx="256" cy="220" r="160" fill="none" stroke="#0ea5e9" stroke-width="1.5" stroke-opacity="0.4"/>
+  <circle cx="256" cy="220" r="120" fill="none" stroke="#06b6d4" stroke-width="2" stroke-opacity="0.6"/>
 
-  <!-- Precision Caliper Degree Ticks -->
-  <g stroke="url(#sieGold)" stroke-width="2" opacity="0.85">
-    <line x1="256" y1="26" x2="256" y2="44"/>
-    <line x1="256" y1="468" x2="256" y2="486"/>
-    <line x1="26" y1="256" x2="44" y2="256"/>
-    <line x1="468" y1="256" x2="486" y2="256"/>
-    
-    <!-- 45-degree angle ticks -->
-    <line x1="93" y1="93" x2="106" y2="106"/>
-    <line x1="419" y1="93" x2="406" y2="106"/>
-    <line x1="93" y1="419" x2="106" y2="406"/>
-    <line x1="419" y1="419" x2="406" y2="406"/>
-  </g>
+  <!-- Crosshair Axes -->
+  <line x1="256" y1="50" x2="256" y2="390" stroke="#0284c7" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="6 6"/>
+  <line x1="86" y1="220" x2="426" y2="220" stroke="#0284c7" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="6 6"/>
 
-  <!-- 3. CENTRAL DIAMOND PATENT ARCHITECTURE SHIELD -->
-  <polygon points="256,60 440,256 256,452 72,256" 
-           fill="#040e1c" 
-           stroke="url(#sieCyan)" 
-           stroke-width="3.5" 
-           filter="url(#sieGlow)"/>
+  <!-- Anatomical Vertebral Body Contour (Stylized Spine Geometry) -->
+  <path d="M 190 190 C 210 170, 302 170, 322 190 C 345 215, 335 270, 310 290 C 285 305, 227 305, 202 290 C 177 270, 167 215, 190 190 Z" 
+        fill="#0f172a" stroke="#38bdf8" stroke-width="3.5" fill-opacity="0.8"/>
+  
+  <!-- Spinal Canal Void -->
+  <ellipse cx="256" cy="235" rx="35" ry="25" fill="#030712" stroke="#06b6d4" stroke-width="2" stroke-dasharray="3 3"/>
 
-  <polygon points="256,80 420,256 256,432 92,256" 
-           fill="none" 
-           stroke="url(#sieGold)" 
-           stroke-width="1.5" 
-           opacity="0.7"/>
+  <!-- Spinous Process (Posterior Anchor) -->
+  <path d="M 245 295 L 256 345 L 267 295 Z" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/>
 
-  <!-- 4. BIOMECHANICAL VERTEBRAL MOTION SEGMENT (SPINE ARCHITECTURE) -->
-  <g filter="url(#sieGlow)">
-    <!-- Upper Vertebral Endplate -->
-    <path d="M 176,170 Q 256,150 336,170 L 326,192 Q 256,174 186,192 Z" 
-          fill="url(#sieTitanium)" 
-          stroke="url(#sieCyan)" 
-          stroke-width="2"/>
+  <!-- Left & Right Transverse Processes -->
+  <path d="M 180 205 L 120 185 L 140 225 L 175 225 Z" fill="#1e293b" stroke="#06b6d4" stroke-width="2.5"/>
+  <path d="M 332 205 L 392 185 L 372 225 L 337 225 Z" fill="#1e293b" stroke="#f59e0b" stroke-width="2.5"/>
 
-    <!-- Intervertebral Nucleus Luminescent Core -->
-    <ellipse cx="256" cy="226" rx="68" ry="24" fill="#041b30" stroke="url(#sieCyan)" stroke-width="2.5"/>
-    <ellipse cx="256" cy="226" rx="46" ry="14" fill="url(#corePulse)"/>
-    <circle cx="256" cy="226" r="6" fill="#ffffff"/>
+  <!-- Robotic Trajectory Guides (Laser Cannula Paths converging on Pedicles) -->
+  <!-- Left Excelsius Cyan Trajectory -->
+  <line x1="130" y1="100" x2="220" y2="215" stroke="#06b6d4" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/>
+  <circle cx="130" cy="100" r="7" fill="#06b6d4" filter="url(#glow)"/>
+  <circle cx="220" cy="215" r="5" fill="#22d3ee"/>
 
-    <!-- Lower Vertebral Endplate -->
-    <path d="M 186,260 Q 256,278 326,260 L 336,282 Q 256,302 176,282 Z" 
-          fill="url(#sieTitanium)" 
-          stroke="url(#sieCyan)" 
-          stroke-width="2"/>
-  </g>
+  <!-- Right Mazor Amber Trajectory -->
+  <line x1="382" y1="100" x2="292" y2="215" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/>
+  <circle cx="382" cy="100" r="7" fill="#f59e0b" filter="url(#glow)"/>
+  <circle cx="292" cy="215" r="5" fill="#fbbf24"/>
 
-  <!-- 5. DUAL CROSSED BAYONET MICRO-SURGICAL INSTRUMENTS -->
-  <!-- Left-to-Right Bayonet Instrument -->
-  <g filter="url(#sieGlow)">
-    <path d="M 105,395 L 175,325 L 210,305 L 380,135" 
-          fill="none" 
-          stroke="url(#sieTitanium)" 
-          stroke-width="8" 
-          stroke-linecap="round"/>
-    <path d="M 210,305 L 380,135" 
-          fill="none" 
-          stroke="url(#sieGold)" 
-          stroke-width="4" 
-          stroke-linecap="round"/>
-    <circle cx="380" cy="135" r="7" fill="#ffffff" stroke="url(#sieGold)" stroke-width="2"/>
-  </g>
+  <!-- Target Acquisition Reticles on Bilateral Pedicles -->
+  <circle cx="220" cy="215" r="14" fill="none" stroke="#22d3ee" stroke-width="2" stroke-dasharray="2 4"/>
+  <circle cx="292" cy="215" r="14" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="2 4"/>
 
-  <!-- Right-to-Left Bayonet Instrument -->
-  <g filter="url(#sieGlow)">
-    <path d="M 407,395 L 337,325 L 302,305 L 132,135" 
-          fill="none" 
-          stroke="url(#sieTitanium)" 
-          stroke-width="8" 
-          stroke-linecap="round"/>
-    <path d="M 302,305 L 132,135" 
-          fill="none" 
-          stroke="url(#sieGold)" 
-          stroke-width="4" 
-          stroke-linecap="round"/>
-    <circle cx="132" cy="135" r="7" fill="#ffffff" stroke="url(#sieGold)" stroke-width="2"/>
-  </g>
+  <!-- Center Robotic Isocenter Target -->
+  <circle cx="256" cy="220" r="6" fill="#10b981" filter="url(#glow)"/>
+  <circle cx="256" cy="220" r="2" fill="#ffffff"/>
 
-  <!-- 6. OPTICAL EMISSION BEAMS FROM DUAL INSTRUMENT TIPS -->
-  <line x1="380" y1="135" x2="420" y2="95" stroke="#fef08a" stroke-width="3" stroke-linecap="round" filter="url(#sieGlow)"/>
-  <line x1="132" y1="135" x2="92" y2="95" stroke="#fef08a" stroke-width="3" stroke-linecap="round" filter="url(#sieGlow)"/>
+  <!-- Active Tracking Nodes (Triangulation Array Points) -->
+  <circle cx="256" cy="90" r="6" fill="#06b6d4" stroke="#ffffff" stroke-width="1.5" filter="url(#glow)"/>
+  <circle cx="150" cy="310" r="5" fill="#06b6d4" stroke="#ffffff" stroke-width="1.5"/>
+  <circle cx="362" cy="310" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5"/>
 
-  <!-- 7. PROMINENT ENGRAVED BADGE: "SURGICAL INNOVATION ENGINE" -->
-  <g transform="translate(256, 360)">
-    <rect x="-85" y="-18" width="170" height="36" rx="8" 
-          fill="#020817" 
-          stroke="url(#sieGold)" 
-          stroke-width="2" 
-          filter="url(#sieGlow)"/>
-    <text x="0" y="6" 
-          text-anchor="middle" 
-          fill="#ffffff" 
-          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif" 
-          font-size="20" 
-          font-weight="900" 
-          letter-spacing="5">
-      S I E
-    </text>
-    <text x="0" y="24" 
-          text-anchor="middle" 
-          fill="#38bdf8" 
-          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif" 
-          font-size="8" 
-          font-weight="700" 
-          letter-spacing="2">
-      SURGICAL INNOVATIONS
-    </text>
-  </g>
+  <!-- Bottom Titanium Emblem Badge -->
+  <rect x="76" y="405" width="360" height="68" rx="16" fill="url(#goldPlate)" stroke="url(#cyanAmberGrad)" stroke-width="2.5" filter="url(#glow)"/>
+  <rect x="82" y="411" width="348" height="56" rx="12" fill="#030712" fill-opacity="0.95"/>
+
+  <!-- Status Indicator Dot inside Badge -->
+  <circle cx="112" cy="439" r="6" fill="#10b981" filter="url(#glow)"/>
+  <circle cx="112" cy="439" r="2.5" fill="#ffffff"/>
+
+  <!-- Bold Monospace App Title Text -->
+  <text x="260" y="446" 
+        font-family="system-ui, -apple-system, 'JetBrains Mono', 'Segoe UI', monospace" 
+        font-size="23" 
+        font-weight="900" 
+        letter-spacing="4" 
+        fill="#f8fafc" 
+        text-anchor="middle">ROBOT SOLVER</text>
 </svg>
