@@ -39,3 +39,8 @@ When Dr. Mohit asks to publish or submit an app to the App Store:
      - Assistant runs `python C:\Users\mohal\.appstoreconnect\asc_pilot.py sync --config <metadata_file>` to auto-fill all 6 pages on App Store Connect in 3 seconds via the Apple REST API.
      - Assistant executes `audit` to verify every field is green `[OK]`.
      - Assistant presents the 1-page pre-flight audit checklist to Dr. Mohit for a 10-second glance before submission.
+
+## 7. App Store Metadata & Developer Standards
+- **Copyright Standard:** Always format as `2026 A. Alex Mohit` across all metadata, files, and submissions (never use "Dr." in copyright or public developer metadata).
+- **Review Contact Information:** Alex Mohit, `mohalex@gmail.com`, `+12066795710`.
+- **Default Pricing:** Tier 2 (`$1.99`) or Tier 3 (`$2.99`) unless specified otherwise.
