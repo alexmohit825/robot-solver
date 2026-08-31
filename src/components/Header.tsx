@@ -1,216 +1,142 @@
 import React from 'react';
 import { 
-  Layers, 
-  Cpu, 
-  ShieldCheck, 
-  FileText, 
-  Award, 
-  Zap, 
-  Scale, 
-  QrCode,
-  GitFork,
-  Wrench,
-  Radio
+  Radio, 
+  Activity, 
+  AlertTriangle, 
+  Search, 
+  Eye, 
+  QrCode, 
+  Github, 
+  ShieldCheck
 } from 'lucide-react';
+import { PlatformType } from '../data/roboticPlatforms';
 
 interface HeaderProps {
-  activeTab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export' | 'robot_solver';
-  setActiveTab: (tab: 'procedures' | 'bottlenecks' | 'portfolio' | 'handheld' | 'quickwins' | 'patent_studio' | 'export' | 'robot_solver') => void;
-  shortlistCount: number;
-  totalInnovationsCount: number;
+  activeSection: 'triage' | 'errors' | 'los';
+  setActiveSection: (section: 'triage' | 'errors' | 'los') => void;
+  selectedPlatform: PlatformType;
   onOpenQRCode: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  activeTab,
-  setActiveTab,
-  shortlistCount,
-  totalInnovationsCount,
+  activeSection,
+  setActiveSection,
+  selectedPlatform,
   onOpenQRCode
 }) => {
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
-      {/* Top Banner / Status Line */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
-        {/* Branding & Master Operator Persona */}
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-amber-500/20 ring-1 ring-amber-400/30">
+    <header className="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-xl">
+      {/* Top Banner / Identity Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+        {/* Branding & Subtitle */}
+        <div className="flex items-center space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-cyan-500 to-blue-500 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-white/20">
             <Radio className="w-6 h-6 text-slate-950 stroke-[2.5]" />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
-                ROBOT SOLVER <span className="text-xs px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800/60 font-mono">v2.0</span>
+            <div className="flex items-center space-x-2.5">
+              <h1 className="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                ROBOT SOLVER
+                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono font-semibold">
+                  v2.0
+                </span>
               </h1>
             </div>
-            <p className="text-xs text-slate-400 font-mono flex items-center gap-2">
-              <span>Intraoperative Error Resolver</span>
+            <p className="text-xs text-slate-400 font-mono flex items-center gap-2 mt-0.5">
+              <span className="text-cyan-400 font-medium">Intraoperative Spine Robotics Engine</span>
               <span className="text-slate-600">•</span>
-              <span className="text-amber-400 font-semibold">Globus ExcelsiusGPS® & Medtronic Mazor X™ Stealth Edition</span>
+              <span className="text-slate-300">Globus ExcelsiusGPS® & Medtronic Mazor X™</span>
             </p>
           </div>
         </div>
 
-        {/* Global Action & Metric Badges */}
+        {/* Global Action & Telemetry Badges */}
         <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono">
-          
-          {/* Dedicated Robot Solver Quick Access Button */}
-          <button
-            onClick={() => setActiveTab('robot_solver')}
-            className={`px-3 py-1.5 rounded-lg border flex items-center space-x-1.5 transition-all font-semibold shadow-md ${
-              activeTab === 'robot_solver'
-                ? 'bg-amber-500/30 text-amber-300 border-amber-400/80 shadow-amber-500/20 ring-1 ring-amber-400/50'
-                : 'bg-amber-950/60 text-amber-400 border-amber-700/60 hover:bg-amber-900/60'
-            }`}
-          >
-            <Cpu className="w-3.5 h-3.5 text-amber-400" />
-            <span>🤖 Robot Solver</span>
-          </button>
-
-          {/* iPhone QR Code Quick Access Button */}
-          <button
-            onClick={onOpenQRCode}
-            className="px-3 py-1.5 rounded-lg bg-cyan-950/80 text-cyan-300 border border-cyan-700/80 hover:bg-cyan-900 flex items-center space-x-1.5 shadow-md shadow-cyan-500/10 transition-all font-semibold"
-            title="Scan QR Code to open on iPhone Safari"
-          >
-            <QrCode className="w-3.5 h-3.5 text-cyan-400" />
-            <span>📱 iPhone Safari QR</span>
-          </button>
-
-          <div className="bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 flex items-center space-x-2">
-            <Award className="w-3.5 h-3.5 text-teal-400" />
-            <span className="text-slate-400">Total Portfolio:</span>
-            <span className="text-white font-semibold">300 Instruments</span>
+          {/* Active Platform Telemetry Badge */}
+          <div className={`px-3 py-1.5 rounded-lg border flex items-center space-x-2 transition-all ${
+            selectedPlatform === 'EXCELSIUS'
+              ? 'bg-cyan-950/80 text-cyan-300 border-cyan-700/80 shadow-sm shadow-cyan-500/10'
+              : 'bg-amber-950/80 text-amber-300 border-amber-700/80 shadow-sm shadow-amber-500/10'
+          }`}>
+            <Activity className="w-3.5 h-3.5 animate-pulse" />
+            <span className="text-slate-400">Target Platform:</span>
+            <span className="font-bold uppercase tracking-wider">
+              {selectedPlatform === 'EXCELSIUS' ? 'ExcelsiusGPS®' : 'Mazor X™'}
+            </span>
           </div>
 
+          {/* iPhone Safari QR Modal */}
           <button
-            onClick={() => setActiveTab('patent_studio')}
-            className={`px-3 py-1.5 rounded-lg border flex items-center space-x-2 transition-all ${
-              activeTab === 'patent_studio'
-                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' 
-                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
-            }`}
+            onClick={onOpenQRCode}
+            className="px-3 py-1.5 rounded-lg bg-slate-900 text-cyan-300 border border-slate-700 hover:border-cyan-500/60 hover:bg-slate-800 flex items-center space-x-1.5 transition-all font-semibold shadow-sm"
+            title="Scan QR Code to open directly on iPhone Safari"
           >
-            <Scale className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Patent Studio</span>
+            <QrCode className="w-3.5 h-3.5 text-cyan-400" />
+            <span>📱 iPhone PWA</span>
           </button>
 
-          <button
-            onClick={() => setActiveTab('export')}
-            className={`px-3 py-1.5 rounded-lg border flex items-center space-x-2 transition-all ${
-              shortlistCount > 0 
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30' 
-                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
-            }`}
+          {/* GitHub Repo Button */}
+          <a
+            href="https://github.com/alexmohit825/robot-solver"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300 border border-slate-700 hover:border-slate-500 hover:bg-slate-800 flex items-center space-x-1.5 transition-all font-medium"
+            title="View source repository on GitHub"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-            <span>Shortlist:</span>
-            <span className="font-bold text-white px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-300">
-              {shortlistCount}
-            </span>
-          </button>
+            <Github className="w-3.5 h-3.5 text-slate-400" />
+            <span>GitHub</span>
+          </a>
+
+          {/* Live OR Verification Status */}
+          <div className="bg-emerald-950/60 text-emerald-300 border border-emerald-800/80 px-3 py-1.5 rounded-lg flex items-center space-x-1.5 font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>OR Safe Mode</span>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Ribbon Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-slate-800/80 overflow-x-auto">
-        <nav className="flex space-x-6 min-w-max">
+      {/* Primary Navigation Ribbon - PURE ROBOT SOLVER */}
+      <div className="bg-slate-900/60 border-t border-slate-800/80 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto flex items-center space-x-2 py-2 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-800">
+          {/* 1. Diagnostic Triage Portal */}
           <button
-            onClick={() => setActiveTab('robot_solver')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'robot_solver'
-                ? 'border-amber-400 text-amber-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            onClick={() => setActiveSection('triage')}
+            className={`px-4 py-2 rounded-lg text-xs font-mono font-semibold flex items-center space-x-2 transition-all whitespace-nowrap ${
+              activeSection === 'triage'
+                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-sm shadow-rose-500/20'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
             }`}
           >
-            <Cpu className="w-4 h-4 text-amber-400" />
-            <span>🤖 Robotic Spine Solver (Excelsius & Mazor X)</span>
+            <AlertTriangle className={`w-4 h-4 ${activeSection === 'triage' ? 'text-rose-400' : 'text-slate-500'}`} />
+            <span>🚨 "The Robot Is Way Off" (Symptom Triage)</span>
           </button>
 
+          {/* 2. Error Code Resolver */}
           <button
-            onClick={() => setActiveTab('portfolio')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'portfolio'
-                ? 'border-cyan-400 text-cyan-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            onClick={() => setActiveSection('errors')}
+            className={`px-4 py-2 rounded-lg text-xs font-mono font-semibold flex items-center space-x-2 transition-all whitespace-nowrap ${
+              activeSection === 'errors'
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm shadow-amber-500/20'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
             }`}
           >
-            <Award className="w-4 h-4" />
-            <span>Top 100 Frontier Innovations</span>
+            <Search className={`w-4 h-4 ${activeSection === 'errors' ? 'text-amber-400' : 'text-slate-500'}`} />
+            <span>🔍 Software Error Codes (Excelsius & Mazor X)</span>
           </button>
 
+          {/* 3. Line of Sight & Geometry Guide */}
           <button
-            onClick={() => setActiveTab('handheld')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'handheld'
-                ? 'border-teal-400 text-teal-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
+            onClick={() => setActiveSection('los')}
+            className={`px-4 py-2 rounded-lg text-xs font-mono font-semibold flex items-center space-x-2 transition-all whitespace-nowrap ${
+              activeSection === 'los'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
             }`}
           >
-            <Wrench className="w-4 h-4 text-teal-400" />
-            <span>Top 100 Handheld Instruments (Low-Capital)</span>
+            <Eye className={`w-4 h-4 ${activeSection === 'los' ? 'text-cyan-400' : 'text-slate-500'}`} />
+            <span>📐 Line of Sight & 3D Tracking Envelope</span>
           </button>
-
-          <button
-            onClick={() => setActiveTab('quickwins')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'quickwins'
-                ? 'border-amber-400 text-amber-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <Zap className="w-4 h-4 text-amber-400" />
-            <span>Top 100 Quick-Win Accessories</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('procedures')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'procedures'
-                ? 'border-cyan-400 text-cyan-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Top-Down Procedure Matrix</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('bottlenecks')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'bottlenecks'
-                ? 'border-cyan-400 text-cyan-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <GitFork className="w-4 h-4" />
-            <span>Cross-Section Bottlenecks</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('patent_studio')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'patent_studio'
-                ? 'border-cyan-400 text-cyan-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <Scale className="w-4 h-4" />
-            <span>Patent Studio</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('export')}
-            className={`py-2.5 text-xs font-semibold uppercase tracking-wider flex items-center space-x-2 border-b-2 transition-all ${
-              activeTab === 'export'
-                ? 'border-cyan-400 text-cyan-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            <span>Invention Dossier & Export</span>
-          </button>
-        </nav>
+        </div>
       </div>
     </header>
   );

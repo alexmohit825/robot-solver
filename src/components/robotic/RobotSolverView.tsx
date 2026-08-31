@@ -15,10 +15,34 @@ import {
   Activity
 } from 'lucide-react';
 
-export const RobotSolverView: React.FC = () => {
-  const [currentPlatform, setCurrentPlatform] = useState<PlatformType>('EXCELSIUS');
-  const [activePortal, setActivePortal] = useState<'SYMPTOMS' | 'ERROR_CODES' | 'LINE_OF_SIGHT'>('SYMPTOMS');
+interface RobotSolverViewProps {
+  currentPlatform?: PlatformType;
+  onSelectPlatform?: (platform: PlatformType) => void;
+  activePortal?: 'SYMPTOMS' | 'ERROR_CODES' | 'LINE_OF_SIGHT';
+  onSelectPortal?: (portal: 'SYMPTOMS' | 'ERROR_CODES' | 'LINE_OF_SIGHT') => void;
+}
+
+export const RobotSolverView: React.FC<RobotSolverViewProps> = ({
+  currentPlatform: controlledPlatform,
+  onSelectPlatform,
+  activePortal: controlledPortal,
+  onSelectPortal
+}) => {
+  const [internalPlatform, setInternalPlatform] = useState<PlatformType>('EXCELSIUS');
+  const [internalPortal, setInternalPortal] = useState<'SYMPTOMS' | 'ERROR_CODES' | 'LINE_OF_SIGHT'>('SYMPTOMS');
   const [selectedCategory, setSelectedCategory] = useState<TriageCategory | 'ALL'>('ALL');
+
+  const currentPlatform = controlledPlatform || internalPlatform;
+  const handleSelectPlatform = (p: PlatformType) => {
+    if (onSelectPlatform) onSelectPlatform(p);
+    else setInternalPlatform(p);
+  };
+
+  const activePortal = controlledPortal || internalPortal;
+  const handleSelectPortal = (portal: 'SYMPTOMS' | 'ERROR_CODES' | 'LINE_OF_SIGHT') => {
+    if (onSelectPortal) onSelectPortal(portal);
+    else setInternalPortal(portal);
+  };
 
   const categories: { id: TriageCategory | 'ALL'; label: string; icon: any }[] = [
     { id: 'ALL', label: 'All Domains', icon: Layers },
@@ -34,33 +58,33 @@ export const RobotSolverView: React.FC = () => {
       {/* 1. Master Platform Selector Bar (ExcelsiusGPS vs Mazor X) */}
       <PlatformSelector 
         currentPlatform={currentPlatform}
-        onSelectPlatform={setCurrentPlatform}
+        onSelectPlatform={handleSelectPlatform}
       />
 
       {/* 2. Primary Portal Switching Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Portal 1: Symptom Decision Tree */}
         <button
-          onClick={() => setActivePortal('SYMPTOMS')}
+          onClick={() => handleSelectPortal('SYMPTOMS')}
           className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden group ${
             activePortal === 'SYMPTOMS'
-              ? 'bg-gradient-to-br from-amber-950/50 to-slate-900 border-amber-500/60 ring-1 ring-amber-500/30 shadow-lg shadow-amber-500/10'
+              ? 'bg-gradient-to-br from-rose-950/40 to-slate-900 border-rose-500/60 ring-1 ring-rose-500/30 shadow-lg shadow-rose-500/10'
               : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
           }`}
         >
           <div className="flex items-center justify-between mb-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
               activePortal === 'SYMPTOMS'
-                ? 'bg-amber-500 text-slate-950'
-                : 'bg-slate-800 text-slate-400 group-hover:text-amber-400'
+                ? 'bg-rose-500 text-white'
+                : 'bg-slate-800 text-slate-400 group-hover:text-rose-400'
             }`}>
               <AlertCircle className="w-5 h-5 stroke-[2.5]" />
             </div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
               CLINICAL FLOW
             </span>
           </div>
-          <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+          <h3 className="text-base font-bold text-white group-hover:text-rose-300 transition-colors">
             🚨 "The Robot Is Way Off"
           </h3>
           <p className="text-xs text-slate-400 font-mono mt-1">
@@ -70,26 +94,26 @@ export const RobotSolverView: React.FC = () => {
 
         {/* Portal 2: Console Error Code Lookup */}
         <button
-          onClick={() => setActivePortal('ERROR_CODES')}
+          onClick={() => handleSelectPortal('ERROR_CODES')}
           className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden group ${
             activePortal === 'ERROR_CODES'
-              ? 'bg-gradient-to-br from-cyan-950/50 to-slate-900 border-cyan-500/60 ring-1 ring-cyan-500/30 shadow-lg shadow-cyan-500/10'
+              ? 'bg-gradient-to-br from-amber-950/40 to-slate-900 border-amber-500/60 ring-1 ring-amber-500/30 shadow-lg shadow-amber-500/10'
               : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
           }`}
         >
           <div className="flex items-center justify-between mb-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
               activePortal === 'ERROR_CODES'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400'
+                ? 'bg-amber-500 text-slate-950'
+                : 'bg-slate-800 text-slate-400 group-hover:text-amber-400'
             }`}>
               <Search className="w-5 h-5 stroke-[2.5]" />
             </div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
               INSTANT DECODER
             </span>
           </div>
-          <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+          <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
             🔍 Screen Alert & Code Lookup
           </h3>
           <p className="text-xs text-slate-400 font-mono mt-1">
@@ -99,26 +123,26 @@ export const RobotSolverView: React.FC = () => {
 
         {/* Portal 3: Line of Sight Visualizer */}
         <button
-          onClick={() => setActivePortal('LINE_OF_SIGHT')}
+          onClick={() => handleSelectPortal('LINE_OF_SIGHT')}
           className={`p-5 rounded-2xl border text-left transition-all relative overflow-hidden group ${
             activePortal === 'LINE_OF_SIGHT'
-              ? 'bg-gradient-to-br from-blue-950/50 to-slate-900 border-blue-500/60 ring-1 ring-blue-500/30 shadow-lg shadow-blue-500/10'
+              ? 'bg-gradient-to-br from-cyan-950/40 to-slate-900 border-cyan-500/60 ring-1 ring-cyan-500/30 shadow-lg shadow-cyan-500/10'
               : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
           }`}
         >
           <div className="flex items-center justify-between mb-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
               activePortal === 'LINE_OF_SIGHT'
-                ? 'bg-blue-500 text-slate-950'
-                : 'bg-slate-800 text-slate-400 group-hover:text-blue-400'
+                ? 'bg-cyan-500 text-slate-950'
+                : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400'
             }`}>
               <Eye className="w-5 h-5 stroke-[2.5]" />
             </div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
               SPATIAL GUIDE
             </span>
           </div>
-          <h3 className="text-base font-bold text-white group-hover:text-blue-300 transition-colors">
+          <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
             📐 Line of Sight & Tracking
           </h3>
           <p className="text-xs text-slate-400 font-mono mt-1">
@@ -139,7 +163,7 @@ export const RobotSolverView: React.FC = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-mono font-semibold whitespace-nowrap flex items-center space-x-1.5 transition-all ${
                   isSelected
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-sm'
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm'
                     : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200'
                 }`}
               >

@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Smartphone, 
-  QrCode, 
-  ExternalLink, 
   Copy, 
   CheckCircle2, 
   Share2, 
   PlusSquare,
-  Sparkles,
-  Info
+  Sparkles
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -18,8 +15,8 @@ interface QRCodeModalProps {
 }
 
 export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
-  const [currentUrl, setCurrentUrl] = useState<string>('https://alexmohit825.github.io/surgical-innovations-engine/');
-  const [customUrl, setCustomUrl] = useState<string>('https://alexmohit825.github.io/surgical-innovations-engine/');
+  const [currentUrl, setCurrentUrl] = useState<string>('https://alexmohit825.github.io/robot-solver/');
+  const [customUrl, setCustomUrl] = useState<string>('https://alexmohit825.github.io/robot-solver/');
   const [copied, setCopied] = useState<boolean>(false);
 
   useEffect(() => {
@@ -30,7 +27,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
     }
   }, []);
 
-  const activeUrl = customUrl || currentUrl || 'https://alexmohit825.github.io/surgical-innovations-engine/';
+  const activeUrl = customUrl || currentUrl || 'https://alexmohit825.github.io/robot-solver/';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(activeUrl);
@@ -45,15 +42,15 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center">
               <Smartphone className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-1.5">
-                iPhone & Safari Quick-Access QR Code
+                iPhone & iPad PWA Quick-Access QR
               </h2>
               <p className="text-xs text-slate-400 font-mono">
-                Instant 24/7 Mobile Safari Access
+                Robot Solver • Standalone Mobile Safari Access
               </p>
             </div>
           </div>
@@ -103,24 +100,24 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
               type="text"
               value={customUrl}
               onChange={(e) => setCustomUrl(e.target.value)}
-              placeholder="https://alexmohit825.github.io/surgical-innovations-engine/"
+              placeholder="https://alexmohit825.github.io/robot-solver/"
               className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg p-2 font-mono focus:outline-none focus:border-cyan-400"
             />
             <p className="text-[10px] text-slate-500 font-mono">
-              All-lowercase canonical URL: <span className="text-cyan-400">https://alexmohit825.github.io/surgical-innovations-engine/</span>
+              Canonical URL: <span className="text-cyan-400">https://alexmohit825.github.io/robot-solver/</span>
             </p>
           </div>
 
           {/* iOS Safari "Add to Home Screen" Instructions */}
           <div className="w-full bg-slate-950/80 border border-slate-800 p-4 rounded-xl space-y-3 text-left font-mono text-xs">
             <div className="flex items-center gap-1.5 text-amber-400 font-bold border-b border-slate-800/80 pb-1.5 text-[11px]">
-              <Sparkles className="w-3.5 h-3.5" /> HOW TO INSTALL ON IPHONE (SAFARI PWA):
+              <Sparkles className="w-3.5 h-3.5" /> HOW TO INSTALL AS STANDALONE IPHONE APP:
             </div>
 
             <ol className="space-y-2 text-[11px] text-slate-300">
               <li className="flex items-start gap-2">
                 <span className="text-cyan-400 font-bold">1.</span>
-                <span>Open iPhone Camera and scan the QR code above to launch in Safari.</span>
+                <span>Open your iPhone Camera and scan the QR code above to launch in Safari.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-cyan-400 font-bold">2.</span>
@@ -136,7 +133,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose }) => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-cyan-400 font-bold">4.</span>
-                <span>The app will launch full-screen as a standalone native-feeling app with your custom surgical icon!</span>
+                <span>Tap <strong>Add</strong>. Robot Solver will launch as a full-screen native PWA with your custom robotic hand + spine icon!</span>
               </li>
             </ol>
           </div>
